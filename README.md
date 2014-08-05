@@ -20,7 +20,7 @@ Installation
     ```
     // #define __REV_PRE400__
     ```
-In the future releases with merged json.fos will be available, so only 2 files will be needed, json.fos and json_h.fos.
+In the future releases a single merged json.fos will be available, so only 2 files will be needed, json.fos and json_h.fos.
 
 
 Documentation
@@ -32,5 +32,4 @@ Not available yet. For now you can check the poems.fos example in the test direc
 Missing features
 ----------------
 
-\u escape code in JOSN strings isn't implemented yet (it will be skipped). Also JSON files with Unicode characters might be bugged.
-
+\u escape code in JOSN strings isn't implemented yet (the character encoded in the escape code will be skipped).
