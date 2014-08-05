@@ -15,7 +15,7 @@ Installation
     @ client module json
     @ mapper module json
     ```
-3. If you use FOnline revision 399 or earlier (the most notable example is FOnline: 2238, uncomment this line in json_h.fos:
+3. If you use FOnline revision 399 or earlier (the most notable example is FOnline: 2238), uncomment this line in json_h.fos:
 
     ```
     // #define __REV_PRE400__
@@ -32,4 +32,4 @@ Not available yet. For now you can check the poems.fos example in the test direc
 Missing features
 ----------------
 
-\u escape code in JOSN strings isn't implemented yet (the character encoded in the escape code will be skipped).
+\u escape code in JSON strings isn't implemented yet (the character encoded in the escape code will be skipped).
