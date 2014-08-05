@@ -1,0 +1,148 @@
+// Various stuff for string handling (for compatibility) and evaluation.
+
+// String manipulation functions.
+//
+#ifdef __REV_PRE400__
+	uint8 getChar(string@ str, uint index)
+	{
+		return str[index];
+	}
+	void setChar(string@ str, uint index, uint8 value)
+	{
+		str[index] = value;
+	}
+	void pushChar(string@ str, uint8 value)
+	{
+		str.resize(str.length() + 1);
+		str[str.length() - 1] = value;
+	}
+	uint getLength(string@ str)
+	{
+		return str.length();
+	}
+#endif
+#ifndef __REV_PRE400__
+	uint8 getChar(string@ str, uint index)
+	{
+		return str.rawGet(index);
+	}
+	void setChar(string@ str, uint index, uint8 value)
+	{
+		str.rawSet(index, value);
+	}
+	void pushChar(string@ str, uint8 value)
+	{
+		str.rawResize(str.rawLength() + 1);
+		str.rawSet(str.rawLength() - 1, value);
+	}
+	uint getLength(string@ str)
+	{
+		return str.rawLength();
+	}
+#endif
+
+// Array with JSON-compatible escape codes of control characters.
+//
+array<string@> controlChars = {
+	"\\u0000", "\\u0001", "\\u0002", "\\u0003",
+	"\\u0004", "\\u0005", "\\u0006", "\\u0007", 
+	"\\b",     "\\t",     "\\n",     "\\u000B",
+	"\\f",     "\\r",     "\\u000E", "\\u000F",
+	"\\u0010", "\\u0011", "\\u0012", "\\u0013",
+	"\\u0014", "\\u0015", "\\u0016", "\\u0017", 
+	"\\u0018", "\\u0019", "\\u001A", "\\u001B",
+	"\\u001C", "\\u001D", "\\u001E", "\\u001F"
+};
+
+// String escaping. Used in toString method of a JSON String.
+//
+string@ escapeString(string@ str)
+{
+	string@ escapedStr = "";
+	uint len = getLength(str);
+	uint8 ch = 0;
+	for (uint i = 0; i < len; i++)
+	{
+		ch = getChar(str, i);
+		if (ch == 34 || ch == 92)
+		{
+			pushChar(escapedStr, 92);
+			pushChar(escapedStr, ch);
+		}
+		else if (ch < 32)
+		{
+			escapedStr += controlChars[ch];
+		}
+		else
+		{
+			pushChar(escapedStr, ch);
+		}
+	}
+	return escapedStr;
+}
+
+// Converts a string to double. Used when evaluating a NUMBER token.
+// TODO: Check the precision of numbers larger than float. Change the return
+// value to bool, return the number by reference and false if conversion failed.
+//
+double StrToDouble(string@ str)
+{
+	int length = getLength(str);
+	int position = getLength(str) - 1;
+	int count = 0;
+	int symbol = 0;
+	int value = 0;
+	int exponent = 0;
+
+	while (position >= 0)
+	{
+		symbol = getChar(str, position);
+
+		switch (symbol)
+		{
+			case 43:  // + sign
+			{
+				break;
+			}
+			case 45:  // - sign
+			{
+				value = -value;
+				break;
+			}
+			case 46:  // . decimal point
+			{
+				exponent += -count;
+				break;
+			}
+			case 48:  // 0
+			case 49:  // 1
+			case 50:  // 2
+			case 51:  // 3
+			case 52:  // 4
+			case 53:  // 5
+			case 54:  // 6
+			case 55:  // 7
+			case 56:  // 8
+			case 57:  // 9
+			{
+				value += (symbol - 48) * int(pow(10, count));
+				count += 1;
+				break;
+			}
+			case 69:  // E
+			case 101: // e
+			{
+				exponent = value;
+				value = 0;
+				count = 0;
+				break;
+			}
+			default:
+			{
+				return 0;
+			}
+		}
+		position -= 1;
+	}
+	return double(value) * double(pow(10, exponent));
+}

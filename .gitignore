@@ -1,0 +1,11 @@
+# Ignore products of tests
+
+test/tested_*.json
+
+# Ignore MSVS files
+
+*.ncb
+*.sln
+*.suo
+*.vcproj
+*.user

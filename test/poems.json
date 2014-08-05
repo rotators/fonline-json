@@ -1,0 +1,35 @@
+[
+  {
+    "title": "Hickory Dickory Dock",
+    "year": 1744,
+    "song": false,
+    "text": [
+      "Hickory, dickory, dock,",
+      "mouse ran up the clock.",
+      "The clock struck one,",
+      "The mouse ran down,",
+      "Hickory, dickory, dock."
+    ]
+  },
+  {
+    "title": "Brother John",
+    "song": true,
+    "text": [
+      "Are you sleeping, are you sleeping,",
+      "Brother John? Brother John?",
+      "Morning bells are ringing! Morning bells are ringing!",
+      "Ding, dang, dong. Ding, dang, dong."
+    ]
+  },
+  {
+    "title": "Roses are red",
+    "year": 1784,
+    "song": false,
+    "text": [
+      "Roses are red,",
+      "Violets are blue,",
+      "Sugar is sweet,",
+      "And so are you."
+    ]
+  }
+]

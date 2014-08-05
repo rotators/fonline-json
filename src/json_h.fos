@@ -1,0 +1,90 @@
+#ifndef __JSON_H__
+#define __JSON_H__
+
+
+// Uncomment the line below if you are using FOnline revision 399 or earlier
+//
+// #define __REV_PRE400__ 
+
+
+// Funcdefs for callbacks of JSON::forEach
+//
+funcdef void JSONForEachKey(JSON@ value, string@ key);
+funcdef void JSONForEachIndex(JSON@ value, uint index);
+
+
+// Interface of JSON values
+//
+shared interface JSON
+{
+	// Checking the type of JSON value
+	//
+	bool isUndefined();
+	bool isNull();
+	bool isBoolean();
+	bool isString();
+	bool isNumber();
+	bool isObject();
+	bool isArray();
+
+	// Retrieving data from a JSON value
+	//
+	JSON@ opShr(bool& value);
+	JSON@ opShr(string@ value);
+	JSON@ opShr(int8& value);
+	JSON@ opShr(int16& value);
+	JSON@ opShr(int32& value);
+	JSON@ opShr(int64& value);
+	JSON@ opShr(uint8& value);
+	JSON@ opShr(uint16& value);
+	JSON@ opShr(uint32& value);
+	JSON@ opShr(uint64& value);
+	JSON@ opShr(float& value);
+	JSON@ opShr(double& value);
+
+	// Storing data in a JSON value
+	//
+	JSON@ opShl(bool& value);
+	JSON@ opShl(string@ value);
+	JSON@ opShl(int8& value);
+	JSON@ opShl(int16& value);
+	JSON@ opShl(int32& value);
+	JSON@ opShl(int64& value);
+	JSON@ opShl(uint8& value);
+	JSON@ opShl(uint16& value);
+	JSON@ opShl(uint32& value);
+	JSON@ opShl(uint64& value);
+	JSON@ opShl(float& value);
+	JSON@ opShl(double& value);
+
+	// Handling JSON Objects
+	//
+	bool hasProperty(string@ key);
+	void setProperty(string@ key, JSON@ value);
+	void forEach(JSONForEachKey@ callback);
+	JSON@ opIndex(string@ key);
+
+	// Handling JSON Arrays
+	//
+	uint length();
+	void push(JSON@ value);
+	void forEach(JSONForEachIndex@ callback);
+	JSON@ opIndex(uint index);
+
+	// Stringification
+	//
+	string@ toString();
+	string@ toString(string@ ind);
+	string@ toString(string@ ind, string@ gap);
+}
+
+#ifndef __JSON__
+
+// Functions exported from the json module.
+//
+import JSON@ JSONLoad(string@ path) from "json";
+import bool JSONSave(JSON@ value, string@ path) from "json";
+import bool JSONSave(JSON@ value, string@ path, string@ indent) from "json";
+
+#endif // __JSON__
+#endif // __JSON_H__

@@ -1,0 +1,334 @@
+JSON@ undefined;
+
+class Value : JSON
+{
+	bool isUndefined()                         { return false; }
+	bool isNull()                              { return false; }
+	bool isBoolean()                           { return false; }
+	bool isString()                            { return false; }
+	bool isNumber()                            { return false; }
+	bool isObject()                            { return false; }
+	bool isArray()                             { return false; }
+
+	JSON@ opShr(bool& value)                   { return this; }
+	JSON@ opShr(string@ value)                 { return this; }
+	JSON@ opShr(int8& value)                   { return this; }
+	JSON@ opShr(int16& value)                  { return this; }
+	JSON@ opShr(int32& value)                  { return this; }
+	JSON@ opShr(int64& value)                  { return this; }
+	JSON@ opShr(uint8& value)                  { return this; }
+	JSON@ opShr(uint16& value)                 { return this; }
+	JSON@ opShr(uint32& value)                 { return this; }
+	JSON@ opShr(uint64& value)                 { return this; }
+	JSON@ opShr(float& value)                  { return this; }
+	JSON@ opShr(double& value)                 { return this; }
+
+	JSON@ opShl(bool& value)                   { return this; }
+	JSON@ opShl(string@ value)                 { return this; }
+	JSON@ opShl(int8& value)                   { return this; }
+	JSON@ opShl(int16& value)                  { return this; }
+	JSON@ opShl(int32& value)                  { return this; }
+	JSON@ opShl(int64& value)                  { return this; }
+	JSON@ opShl(uint8& value)                  { return this; }
+	JSON@ opShl(uint16& value)                 { return this; }
+	JSON@ opShl(uint32& value)                 { return this; }
+	JSON@ opShl(uint64& value)                 { return this; }
+	JSON@ opShl(float& value)                  { return this; }
+	JSON@ opShl(double& value)                 { return this; }
+
+	bool hasProperty(string@ key)              { return false; }
+	void setProperty(string@ key, JSON@ value) { return; }
+	JSON@ opIndex(string@ key)                 { return @undefined; }
+	void forEach(JSONForEachKey@ callback)     { return; }
+
+	uint length()                              { return 0; }
+	void push(JSON@ value)                     { return; }
+	JSON@ opIndex(uint index)                  { return @undefined; }
+	void forEach(JSONForEachIndex@ callback)   { return; }
+
+	string@ toString(string@ indent, string@ gap) { return ""; }
+	string@ toString(string@ indent)       { return this.toString(indent, ""); }
+	string@ toString()                     { return this.toString("  ", ""); }
+}
+
+final class Undefined : Value
+{
+	bool isUndefined()
+	{
+		return true;
+	}
+}
+
+final class Null : Value
+{
+    bool isNull()
+	{
+		return true;
+	}
+
+	string@ toString(string@ indent, string@ gap)
+	{
+		return "null";
+	}
+
+}
+
+final class Boolean : Value
+{
+	private bool value;
+
+	Boolean(bool value)
+	{
+		this.value = value;
+	}
+
+	bool isBoolean()
+	{
+		return true;
+	}
+
+	JSON@ opShr(bool& value)
+	{
+		value = this.value;
+		return this;
+	}
+
+	JSON@ opShl(bool& value)
+	{
+		this.value = value;
+		return this;
+	}
+
+	string@ toString(string@ indent, string@ gap)
+	{
+		if (value)
+		{
+			return "true";
+		}
+		else
+		{
+			return "false";
+		}
+	}
+}
+
+final class Number : Value
+{
+	private double value;
+
+	Number(int8 value)   { this.value = value; }
+	Number(int16 value)  { this.value = value; }
+	Number(int32 value)  { this.value = value; }
+	Number(int64 value)  { this.value = value; }
+	Number(uint8 value)  { this.value = value; }
+	Number(uint16 value) { this.value = value; }
+	Number(uint32 value) { this.value = value; }
+	Number(uint64 value) { this.value = value; }
+	Number(float value)  { this.value = value; }
+	Number(double value) { this.value = value; }
+
+	bool isNumber()
+	{
+		return true;
+	}
+
+	JSON@ opShr(int8& value)   { value = int8(this.value); return this; }
+	JSON@ opShr(int16& value)  { value = int16(this.value); return this; }
+	JSON@ opShr(int32& value)  { value = int32(this.value); return this; }
+	JSON@ opShr(int64& value)  { value = int64(this.value); return this; }
+	JSON@ opShr(uint8& value)  { value = uint8(this.value); return this; }
+	JSON@ opShr(uint16& value) { value = uint16(this.value); return this; }
+	JSON@ opShr(uint32& value) { value = uint32(this.value); return this; }
+	JSON@ opShr(uint64& value) { value = uint64(this.value); return this; }
+	JSON@ opShr(float& value)  { value = float(this.value); return this; }
+	JSON@ opShr(double& value) { value = this.value; return this; }
+
+	JSON@ opShl(int8& value)   { this.value = value; return this; }
+	JSON@ opShl(int16& value)  { this.value = value; return this; }
+	JSON@ opShl(int32& value)  { this.value = value; return this; }
+	JSON@ opShl(int64& value)  { this.value = value; return this; }
+	JSON@ opShl(uint8& value)  { this.value = value; return this; }
+	JSON@ opShl(uint16& value) { this.value = value; return this; }
+	JSON@ opShl(uint32& value) { this.value = value; return this; }
+	JSON@ opShl(uint64& value) { this.value = value; return this; }
+	JSON@ opShl(float& value)  { this.value = value; return this; }
+	JSON@ opShl(double& value) { this.value = value; return this; }
+
+	string@ toString(string@ indent, string@ gap)
+	{
+		string@ s = "" + this.value;
+		for (uint i = 0, j = getLength(s); i < j; i++)
+		{
+			if (getChar(s, i) == ',')
+			{
+				setChar(s, i, '.');
+			}
+		}
+		return s;
+	}
+}
+
+final class String : Value
+{
+	private string value;
+
+	String(string@ value)
+	{
+		this.value = value;
+	}
+
+	bool isString()
+	{
+		return true;
+	}
+
+	JSON@ opShr(string@ value)
+	{
+		value = this.value;
+		return this;
+	}
+
+	JSON@ opShl(string@ value)
+	{
+		this.value = value;
+		return this;
+	}
+
+	string@ toString(string@ indent, string@ gap)
+	{
+		return "\"" + escapeString(this.value) + "\"";
+	}
+}
+
+final class Object : Value
+{
+	private dictionary properties;
+	private array<string@>keys;
+
+	bool isObject()
+	{
+		return true;
+	}
+
+	bool hasProperty(string@ key)
+	{
+		return this.properties.exists(key);
+	}
+
+	void setProperty(string@ key, JSON@ value)
+	{
+		if (value.isUndefined())
+		{
+			return;
+		}
+		if (!this.properties.exists(key))
+		{
+			keys.insertLast(key);
+		}
+		properties.set(key, @value);
+	}
+
+	void forEach(JSONForEachKey@ callback)
+	{
+		JSON@ value;
+		for (uint i = 0, j = this.keys.length(); i < j; i += 1)
+		{
+			properties.get(this.keys[i], @value);
+			callback(value, this.keys[i]);
+		}
+	}
+
+	JSON@ opIndex(string@ key)
+	{
+		if (this.hasProperty(key))
+		{
+			JSON@ value;
+			properties.get(key, @value);
+			return @value;
+		}
+		else
+		{
+			return @undefined;
+		}
+	}
+
+	string@ toString(string@ indent, string@ gap)
+	{
+		bool pretty = getLength(indent) > 0;
+		string keyIndent = gap + indent + "\"";
+		string s = "{" + (pretty ? "\n" : "");
+		JSON@ value;
+		for (uint i = 0, j = this.keys.length(); i < j; i += 1)
+		{
+			properties.get(this.keys[i], @value);
+			s += keyIndent + this.keys[i] + "\":" + (pretty ? " " : "") + value.toString(indent, gap + indent);
+			if (i < j - 1)
+			{
+				s += "," + (pretty ? "\n" : "");
+			}
+		}
+		s += (pretty ? "\n" : "") + gap + "}";
+		return s;
+	}
+}
+
+final class Array : Value
+{
+	private array<JSON@> elements;
+
+	bool isArray()
+	{
+		return true;
+	}
+
+	uint length()
+	{
+		return this.elements.length();
+	}
+
+	void push(JSON@ value)
+	{
+		if (value.isUndefined())
+		{
+			return;
+		}
+		this.elements.insertLast(@value);
+	}
+
+	void forEach(JSONForEachIndex@ callback)
+	{
+		for (uint i = 0, j = elements.length(); i < j; i += 1)
+		{
+			callback(elements[i], i);
+		}
+	}
+
+	JSON@ opIndex(uint index)
+	{
+		if (index < this.elements.length())
+		{
+			return this.elements[index];
+		}
+		else
+		{
+			return @undefined;
+		}
+	}
+
+	string@ toString(string@ indent, string@ gap)
+	{
+		bool pretty = getLength(indent) > 0;
+		string s = "[" + (pretty ? "\n" : "");
+		JSON@ value;
+		for (uint i = 0, j = this.elements.length(); i < j; i += 1)
+		{
+			s += gap + indent + this.elements[i].toString(indent, gap + indent);
+			if (i < j - 1)
+			{
+				s += "," + (pretty ? "\n" : "");
+			}
+		}
+		s += (pretty ? "\n" : "") + gap + "]";
+		return s;
+	}
+}

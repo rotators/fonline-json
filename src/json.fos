@@ -1,0 +1,12 @@
+#ifndef __JSON__
+#define __JSON__
+
+#include "json_h.fos"
+
+#include "json_utils.fos"
+#include "json_values.fos"
+#include "json_tokenizer.fos"	
+#include "json_parser.fos"
+#include "json_export.fos"
+
+#endif // __JSON__

@@ -1,0 +1,54 @@
+// A test of various json.fos functions. Use ASCompiler to run it:
+//
+// ASCompiler -run tmain
+//
+// If you are using ASCompiler of FOnline revision 399 or earlier, make sure
+// that __REV_PRE400__ is defined:
+//
+// ASCompiler -d __REV_PRE400__ -run tmain
+
+#include "../src/json.fos"
+
+void tmain()
+{
+	JSON@ poems = JSONLoad("poems.json");
+	poems.forEach(@WritePoem);
+	poems[0]["title"] << "This poem title got hacked!";
+	JSONSave(poems, "tested_poems.json");
+}
+
+void WritePoem(JSON@ poem, uint index)
+{
+	string title = "No title";
+	int year = 0;
+	bool isSong = false;
+
+	poem["title"] >> title;
+	poem["year"] >> year;
+	poem["song"] >> isSong;
+
+	Log("----------------------------");
+	Log("Poem " + index + ": " + title);
+
+	if (!poem["year"].isNumber())
+	{
+		Log("Published: Unknown date.");
+	}
+	else
+	{
+		Log("Published: " + year);
+	}
+
+	if (isSong)
+	{
+		Log("It's a song, sing it!");
+	}
+	poem["text"].forEach(@WritePoemLine);
+}
+
+void WritePoemLine(JSON@ text, uint index)
+{
+	string line = "";
+	text >> line;
+	Log("    " + line);
+}
