@@ -34,7 +34,7 @@ bool JSONSave(JSON@ value, string@ path, string@ indent)
 	if (f.open(path, "w") == 0)
 	{
 		string@ data = value.toString(indent);
-		return (f.writeString(data) == getLength(data));
+		return (uint(f.writeString(data)) == getLength(data));
 	}
 	return false;
 }
