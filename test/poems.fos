@@ -1,53 +1,53 @@
-//	A test of various json.fos functions. Use ASCompiler to run it:
+//    A test of various json.fos functions. Use ASCompiler to run it:
 //
-//	ASCompiler poems.fos -run tmain
+//    ASCompiler poems.fos -run tmain
 //
-//	If you are using ASCompiler included with FOnline revision 399 or earlier,
-//	make sure that _JSON_REV_PRE400 is defined. You can do it in json_h.fos or
-//	with -d option:
+//    If you are using ASCompiler included with FOnline revision 399 or earlier,
+//    make sure that _JSON_REV_PRE400 is defined. You can do it in json_h.fos or
+//    with -d option:
 //
-//	ASCompiler poems.fos -d _JSON_REV_PRE400 -run tmain
+//    ASCompiler poems.fos -d _JSON_REV_PRE400 -run tmain
 
 #include "../src/json.fos"
 
 void tmain()
 {
-	JSON@ poems = JSONLoad("poems.json");
-	poems[0]["title"] << "This poem title got hacked!";
-	_JSON_ForEach(poems, @WritePoem);
-	JSONSave(poems, "tested_poems.json");
+    JSON@ poems = JSONLoad("poems.json");
+    poems[0]["title"] << "This poem title got hacked!";
+    _JSON_ForEach(poems, @WritePoem);
+    JSONSave(poems, "tested_poems.json");
 }
 
 void WritePoem(JSON@ poem, uint index)
 {
-	string title = "No title";
-	bool isSong = false;
+    string title = "No title";
+    bool isSong = false;
 
-	poem["title"] >> title;
-	poem["song"] >> isSong;
+    poem["title"] >> title;
+    poem["song"] >> isSong;
 
-	Log("----------------------------");
-	Log("Poem " + index + ": " + title);
+    Log("----------------------------");
+    Log("Poem " + index + ": " + title);
 
-	if (!poem["year"].isNumber())
-	{
-		Log("Published: Unknown date.");
-	}
-	else
-	{
-		Log("Published: " + poem["year"].toString());
-	}
+    if (!poem["year"].isNumber())
+    {
+        Log("Published: Unknown date.");
+    }
+    else
+    {
+        Log("Published: " + poem["year"].toString());
+    }
 
-	if (isSong)
-	{
-		Log("It's a song, sing it!");
-	}
-	_JSON_ForEach(poem["text"], @WritePoemLine);
+    if (isSong)
+    {
+        Log("It's a song, sing it!");
+    }
+    _JSON_ForEach(poem["text"], @WritePoemLine);
 }
 
 void WritePoemLine(JSON@ text, uint index)
 {
-	string line = "";
-	text >> line;
-	Log("    " + line);
+    string line = "";
+    text >> line;
+    Log("    " + line);
 }

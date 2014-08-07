@@ -1,46 +1,46 @@
-// Functions imported into other modules via json_h.fos.
+//  Functions imported into other modules via json_h.fos.
 
 JSON@ JSONLoad(const string& path)
 {
-	if (@undefined == null)
-	{
-		@undefined = @Undefined();
-	}
-	file f;
-	if (f.open(path, "r") == 0)
-	{
-		int size = f.getSize();
-		string@ text = "";
-		if (f.readString(size, text) == size)
-		{
-			array<Token@> tokens;
-			if (tokenize(text, tokens))
-			{
-				return parse(@tokens);
-			}
-		}
-	}
-	return @undefined;
+    if (@undefined == null)
+    {
+        @undefined = @Undefined();
+    }
+    file f;
+    if (f.open(path, "r") == 0)
+    {
+        int size = f.getSize();
+        string@ text = "";
+        if (f.readString(size, text) == size)
+        {
+            array<Token@> tokens;
+            if (tokenize(text, tokens))
+            {
+                return parse(@tokens);
+            }
+        }
+    }
+    return @undefined;
 }
 
 bool JSONSave(JSON@ value, const string& path)
 {
-	return JSONSave(value, path, "  ");
+    return JSONSave(value, path, "  ");
 }
 
 bool JSONSave(JSON@ value, const string& path, const string& indent)
 {
-	if (@value == null || value.isUndefined())
-	{
-		return false;
-	}
-	file f;
-	if (f.open(path, "w") == 0)
-	{
-		string@ data = value.toString(indent);
-		return (uint(f.writeString(data)) == _CharLen(data));
-	}
-	return false;
+    if (@value == null || value.isUndefined())
+    {
+        return false;
+    }
+    file f;
+    if (f.open(path, "w") == 0)
+    {
+        string@ data = value.toString(indent);
+        return (uint(f.writeString(data)) == _CharLen(data));
+    }
+    return false;
 }
 
 
