@@ -79,7 +79,7 @@ shared interface JSON
 	//	implemented directly in this header file. If you want to keep the code
 	//	compatible for both cases, use _JSON_ForEach() macro for iteration.
 	//
-	#ifndef JSON_REV_PRE400
+	#ifndef _JSON_REV_PRE400
 		void forEach(JSONForEachIndex@ callback);
 		void forEach(JSONForEachKey@ callback);
 		#define _JSON_ForEach #(_value, _callback) _value.forEach(_callback)
@@ -99,7 +99,7 @@ shared interface JSON
 //
 //	ForEach for revisions 399 and earlier.
 //
-#ifdef JSON_REV_PRE400
+#ifdef _JSON_REV_PRE400
 	void JSONForEach(JSON@ value, JSONForEachIndex@ callback)
 	{
 		if (@value != null && value.isArray())
