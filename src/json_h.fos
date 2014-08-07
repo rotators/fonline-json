@@ -4,11 +4,6 @@
 //  Uncomment the line below if you are using FOnline revision 399 or earlier.
 //  #define _JSON_REV_PRE400
 
-funcdef void JSONForEachKey(JSON@ value, const string& key);
-funcdef void JSONForEachKeyAll(JSON@ value, const string& key, JSON@ all);
-funcdef void JSONForEachIndex(JSON@ value, uint index);
-funcdef void JSONForEachIndexAll(JSON@ value, uint index, JSON@ all);
-
 shared interface JSON
 {
     ////////////////////////////////////////////////////////////////////////////
@@ -93,10 +88,12 @@ shared interface JSON
     //
     //  Stringification - converts a JSON value into a valid JSON text.
     //  Default indentation style is two spaces.
+    //  TODO: Right now it's possible to pass anything to indentStyle and
+    //  indentStart. At least indentStyle should be checked.
     //
-    string@ toString();
-    string@ toString(const string& indentStyle);
-    string@ toString(const string& indentStyle, string& indentStart);
+    string@ stringify();
+    string@ stringify(const string& indentStyle);
+    string@ stringify(const string& indentStyle, string& indentStart);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -146,9 +143,19 @@ shared interface JSON
             }
         }
     }
-
     #define _JSON_ForEach #(_value, _callback) JSONForEach(_value, _callback)
 #endif
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Funcdefs of ForEach callbacks.
+//
+funcdef void JSONForEachKey(JSON@ value, const string& key);
+funcdef void JSONForEachKeyAll(JSON@ value, const string& key, JSON@ all);
+funcdef void JSONForEachIndex(JSON@ value, uint index);
+funcdef void JSONForEachIndexAll(JSON@ value, uint index, JSON@ all);
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -162,5 +169,6 @@ shared interface JSON
     import bool JSONSave(JSON@ value, const string& path, const string& indent)
         from "json";
 #endif
+
 
 #endif // __JSON_H__

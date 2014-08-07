@@ -49,17 +49,17 @@ class Value : JSON
     void forEach(JSONForEachIndex@ callback)    { return; }
     void forEach(JSONForEachIndexAll@ callback) { return; }
 
-    string@ toString()
+    string@ stringify()
     {
-        return this.toString("  ", "");
+        return this.stringify("  ", "");
     }
 
-    string@ toString(const string& indentStyle)
+    string@ stringify(const string& indentStyle)
     {
-        return this.toString(indentStyle, "");
+        return this.stringify(indentStyle, "");
     }
 
-    string@ toString(const string& indentStyle, string& indentStart)
+    string@ stringify(const string& indentStyle, string& indentStart)
     {
         return "";
     }
@@ -80,7 +80,7 @@ final class Null : Value
         return true;
     }
 
-    string@ toString(const string& indentStyle, string& indentStart)
+    string@ stringify(const string& indentStyle, string& indentStart)
     {
         return "null";
     }
@@ -113,7 +113,7 @@ final class Boolean : Value
         return this;
     }
 
-    string@ toString(const string& indentStyle, string& indentStart)
+    string@ stringify(const string& indentStyle, string& indentStart)
     {
         if (value)
         {
@@ -168,7 +168,7 @@ final class Number : Value
     JSON@ opShl(const float value)  { this.value = value; return this; }
     JSON@ opShl(const double value) { this.value = value; return this; }
 
-    string@ toString(const string& indentStyle, string& indentStart)
+    string@ stringify(const string& indentStyle, string& indentStart)
     {
         string@ s = "" + this.value;
         for (uint i = 0, j = _CharLen(s); i < j; i++)
@@ -208,7 +208,7 @@ final class String : Value
         return this;
     }
 
-    string@ toString(const string& indentStyle, string& indentStart)
+    string@ stringify(const string& indentStyle, string& indentStart)
     {
         return "\"" + Escape(this.value) + "\"";
     }
@@ -280,7 +280,7 @@ final class Object : Value
         }
     }
 
-    string@ toString(const string& indentStyle, string& indentStart)
+    string@ stringify(const string& indentStyle, string& indentStart)
     {
         bool compact = (indentStyle.length() == 0);
         string indent = indentStart + indentStyle;
@@ -290,7 +290,7 @@ final class Object : Value
         {
             this.properties.get(this.keys[i], @prop);
             s += indent + "\"" + this.keys[i] + (compact ? "\":" : "\": ");
-            s += prop.toString(indentStyle, indent);
+            s += prop.stringify(indentStyle, indent);
             if (i < j - 1)
             {
                 s += (compact ? "," : ",\n");
@@ -351,14 +351,14 @@ final class Array : Value
         }
     }
 
-    string@ toString(const string& indentStyle, string& indentStart)
+    string@ stringify(const string& indentStyle, string& indentStart)
     {
         bool compact = (indentStyle.length() == 0);
         string indent = indentStart + indentStyle;
         string s = (compact ? "[" : "[\n");
         for (uint i = 0, j = this.elements.length(); i < j; i++)
         {
-            s += indent + this.elements[i].toString(indentStyle, indent);
+            s += indent + this.elements[i].stringify(indentStyle, indent);
             if (i < j - 1)
             {
                 s += (compact ? "," : ",\n");

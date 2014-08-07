@@ -35,7 +35,7 @@ void WritePoem(JSON@ poem, uint index)
     }
     else
     {
-        Log("Published: " + poem["year"].toString());
+        Log("Published: " + poem["year"].stringify());
     }
 
     if (isSong)
