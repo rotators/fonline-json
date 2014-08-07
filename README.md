@@ -9,4 +9,4 @@ The module is released under the terms of CC0, which means you can do anything w
 
 ### About JSON
 
-JSON is a lightweight data-interchange format, which can be used for example for configuration files or to store any other data in human-readable form. It's widely supported (there are implementations in most languages) and easy to work with. For more information about JSON, go to [json.org](http://json.org/).
+JSON is a lightweight data-interchange format, which can be used for example for configuration files or to store any other data in human-readable form. It's widely supported (there are implementations in all popular languages) and easy to work with. For more information about JSON, go to [json.org](http://json.org/).
