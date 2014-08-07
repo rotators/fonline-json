@@ -2,53 +2,56 @@ JSON@ undefined;
 
 class Value : JSON
 {
-	bool isUndefined()                         { return false; }
-	bool isNull()                              { return false; }
-	bool isBoolean()                           { return false; }
-	bool isString()                            { return false; }
-	bool isNumber()                            { return false; }
-	bool isObject()                            { return false; }
-	bool isArray()                             { return false; }
+	bool isUndefined() { return false; }
+	bool isNull()      { return false; }
+	bool isBoolean()   { return false; }
+	bool isString()    { return false; }
+	bool isNumber()    { return false; }
+	bool isObject()    { return false; }
+	bool isArray()     { return false; }
 
-	JSON@ opShr(bool& value)                   { return this; }
-	JSON@ opShr(string@ value)                 { return this; }
-	JSON@ opShr(int8& value)                   { return this; }
-	JSON@ opShr(int16& value)                  { return this; }
-	JSON@ opShr(int32& value)                  { return this; }
-	JSON@ opShr(int64& value)                  { return this; }
-	JSON@ opShr(uint8& value)                  { return this; }
-	JSON@ opShr(uint16& value)                 { return this; }
-	JSON@ opShr(uint32& value)                 { return this; }
-	JSON@ opShr(uint64& value)                 { return this; }
-	JSON@ opShr(float& value)                  { return this; }
-	JSON@ opShr(double& value)                 { return this; }
+	JSON@ opShr(bool& value)   { return this; }
+	JSON@ opShr(string& value) { return this; }
+	JSON@ opShr(int8& value)   { return this; }
+	JSON@ opShr(int16& value)  { return this; }
+	JSON@ opShr(int32& value)  { return this; }
+	JSON@ opShr(int64& value)  { return this; }
+	JSON@ opShr(uint8& value)  { return this; }
+	JSON@ opShr(uint16& value) { return this; }
+	JSON@ opShr(uint32& value) { return this; }
+	JSON@ opShr(uint64& value) { return this; }
+	JSON@ opShr(float& value)  { return this; }
+	JSON@ opShr(double& value) { return this; }
 
-	JSON@ opShl(bool& value)                   { return this; }
-	JSON@ opShl(string@ value)                 { return this; }
-	JSON@ opShl(int8& value)                   { return this; }
-	JSON@ opShl(int16& value)                  { return this; }
-	JSON@ opShl(int32& value)                  { return this; }
-	JSON@ opShl(int64& value)                  { return this; }
-	JSON@ opShl(uint8& value)                  { return this; }
-	JSON@ opShl(uint16& value)                 { return this; }
-	JSON@ opShl(uint32& value)                 { return this; }
-	JSON@ opShl(uint64& value)                 { return this; }
-	JSON@ opShl(float& value)                  { return this; }
-	JSON@ opShl(double& value)                 { return this; }
+	JSON@ opShl(const bool value)    { return this; }
+	JSON@ opShl(const string& value) { return this; }
+	JSON@ opShl(const int8 value)    { return this; }
+	JSON@ opShl(const int16 value)   { return this; }
+	JSON@ opShl(const int32 value)   { return this; }
+	JSON@ opShl(const int64 value)   { return this; }
+	JSON@ opShl(const uint8 value)   { return this; }
+	JSON@ opShl(const uint16 value)  { return this; }
+	JSON@ opShl(const uint32 value)  { return this; }
+	JSON@ opShl(const uint64 value)  { return this; }
+	JSON@ opShl(const float value)   { return this; }
+	JSON@ opShl(const double value)  { return this; }
 
-	bool hasProperty(string@ key)              { return false; }
-	void setProperty(string@ key, JSON@ value) { return; }
-	JSON@ opIndex(string@ key)                 { return @undefined; }
-	void forEach(JSONForEachKey@ callback)     { return; }
+	bool hasProperty(const string& key)              { return false; }
+	void setProperty(const string& key, JSON@ value) { return; }
+	
+	array<string> getKeys()                  { array<string> k; return k; }
 
-	uint length()                              { return 0; }
-	void push(JSON@ value)                     { return; }
-	JSON@ opIndex(uint index)                  { return @undefined; }
-	void forEach(JSONForEachIndex@ callback)   { return; }
+	JSON@ opIndex(const string& key)         { return @undefined; }
+	void forEach(JSONForEachKey@ callback)   { return; }
 
-	string@ toString(string@ indent, string@ gap) { return ""; }
-	string@ toString(string@ indent)       { return this.toString(indent, ""); }
-	string@ toString()                     { return this.toString("  ", ""); }
+	uint length()                            { return 0; }
+	void push(JSON@ value)                   { return; }
+	JSON@ opIndex(const uint index)          { return @undefined; }
+	void forEach(JSONForEachIndex@ callback) { return; }
+
+	string@ toString() { return this.toString("  ", ""); }
+	string@ toString(const string& indentStyle) { return this.toString(indentStyle, ""); }
+	string@ toString(const string& indentStyle, string& indentStart) { return ""; }
 }
 
 final class Undefined : Value
@@ -61,12 +64,12 @@ final class Undefined : Value
 
 final class Null : Value
 {
-    bool isNull()
+	bool isNull()
 	{
 		return true;
 	}
 
-	string@ toString(string@ indent, string@ gap)
+	string@ toString(const string& indentStyle, string& indentStart)
 	{
 		return "null";
 	}
@@ -93,13 +96,13 @@ final class Boolean : Value
 		return this;
 	}
 
-	JSON@ opShl(bool& value)
+	JSON@ opShl(const bool value)
 	{
 		this.value = value;
 		return this;
 	}
 
-	string@ toString(string@ indent, string@ gap)
+	string@ toString(const string& indentStyle, string& indentStart)
 	{
 		if (value)
 		{
@@ -143,25 +146,25 @@ final class Number : Value
 	JSON@ opShr(float& value)  { value = float(this.value); return this; }
 	JSON@ opShr(double& value) { value = this.value; return this; }
 
-	JSON@ opShl(int8& value)   { this.value = value; return this; }
-	JSON@ opShl(int16& value)  { this.value = value; return this; }
-	JSON@ opShl(int32& value)  { this.value = value; return this; }
-	JSON@ opShl(int64& value)  { this.value = value; return this; }
-	JSON@ opShl(uint8& value)  { this.value = value; return this; }
-	JSON@ opShl(uint16& value) { this.value = value; return this; }
-	JSON@ opShl(uint32& value) { this.value = value; return this; }
-	JSON@ opShl(uint64& value) { this.value = value; return this; }
-	JSON@ opShl(float& value)  { this.value = value; return this; }
-	JSON@ opShl(double& value) { this.value = value; return this; }
+	JSON@ opShl(const int8 value)   { this.value = value; return this; }
+	JSON@ opShl(const int16 value)  { this.value = value; return this; }
+	JSON@ opShl(const int32 value)  { this.value = value; return this; }
+	JSON@ opShl(const int64 value)  { this.value = value; return this; }
+	JSON@ opShl(const uint8 value)  { this.value = value; return this; }
+	JSON@ opShl(const uint16 value) { this.value = value; return this; }
+	JSON@ opShl(const uint32 value) { this.value = value; return this; }
+	JSON@ opShl(const uint64 value) { this.value = value; return this; }
+	JSON@ opShl(const float value)  { this.value = value; return this; }
+	JSON@ opShl(const double value) { this.value = value; return this; }
 
-	string@ toString(string@ indent, string@ gap)
+	string@ toString(const string& indentStyle, string& indentStart)
 	{
 		string@ s = "" + this.value;
-		for (uint i = 0, j = getLength(s); i < j; i++)
+		for (uint i = 0, j = _CharLen(s); i < j; i++)
 		{
-			if (getChar(s, i) == ',')
+			if (_CharGet(s, i) == ',')
 			{
-				setChar(s, i, '.');
+				_CharSet(s, i, '.');
 			}
 		}
 		return s;
@@ -182,42 +185,42 @@ final class String : Value
 		return true;
 	}
 
-	JSON@ opShr(string@ value)
+	JSON@ opShr(string& value)
 	{
 		value = this.value;
 		return this;
 	}
 
-	JSON@ opShl(string@ value)
+	JSON@ opShl(const string& value)
 	{
 		this.value = value;
 		return this;
 	}
 
-	string@ toString(string@ indent, string@ gap)
+	string@ toString(const string& indentStyle, string& indentStart)
 	{
-		return "\"" + escapeString(this.value) + "\"";
+		return "\"" + Escape(this.value) + "\"";
 	}
 }
 
 final class Object : Value
 {
 	private dictionary properties;
-	private array<string@>keys;
+	private array<string>keys;
 
 	bool isObject()
 	{
 		return true;
 	}
 
-	bool hasProperty(string@ key)
+	bool hasProperty(const string& key)
 	{
 		return this.properties.exists(key);
 	}
 
-	void setProperty(string@ key, JSON@ value)
+	void setProperty(const string& key, JSON@ value)
 	{
-		if (value.isUndefined())
+		if (@value == null || value.isUndefined())
 		{
 			return;
 		}
@@ -226,6 +229,11 @@ final class Object : Value
 			keys.insertLast(key);
 		}
 		properties.set(key, @value);
+	}
+
+	array<string> getKeys()
+	{
+		return this.keys;
 	}
 
 	void forEach(JSONForEachKey@ callback)
@@ -238,7 +246,7 @@ final class Object : Value
 		}
 	}
 
-	JSON@ opIndex(string@ key)
+	JSON@ opIndex(const string& key)
 	{
 		if (this.hasProperty(key))
 		{
@@ -252,22 +260,23 @@ final class Object : Value
 		}
 	}
 
-	string@ toString(string@ indent, string@ gap)
+	string@ toString(const string& indentStyle, string& indentStart)
 	{
-		bool pretty = getLength(indent) > 0;
-		string keyIndent = gap + indent + "\"";
-		string s = "{" + (pretty ? "\n" : "");
-		JSON@ value;
-		for (uint i = 0, j = this.keys.length(); i < j; i += 1)
+		bool compact = (indentStyle.length() == 0);
+		string indent = indentStart + indentStyle;
+		string s = (compact ? "{" : "{\n");
+		JSON@ prop;
+		for (uint i = 0, j = this.keys.length(); i < j; i++)
 		{
-			properties.get(this.keys[i], @value);
-			s += keyIndent + this.keys[i] + "\":" + (pretty ? " " : "") + value.toString(indent, gap + indent);
+			this.properties.get(this.keys[i], @prop);
+			s += indent + "\"" + this.keys[i] + (compact ? "\":" : "\": ");
+			s += prop.toString(indentStyle, indent);
 			if (i < j - 1)
 			{
-				s += "," + (pretty ? "\n" : "");
+				s += (compact ? "," : ",\n");
 			}
 		}
-		s += (pretty ? "\n" : "") + gap + "}";
+		s += (compact ? "}" : "\n" + indentStart + "}");
 		return s;
 	}
 }
@@ -288,7 +297,7 @@ final class Array : Value
 
 	void push(JSON@ value)
 	{
-		if (value.isUndefined())
+		if (@value == null || value.isUndefined())
 		{
 			return;
 		}
@@ -303,7 +312,7 @@ final class Array : Value
 		}
 	}
 
-	JSON@ opIndex(uint index)
+	JSON@ opIndex(const uint index)
 	{
 		if (index < this.elements.length())
 		{
@@ -315,20 +324,20 @@ final class Array : Value
 		}
 	}
 
-	string@ toString(string@ indent, string@ gap)
+	string@ toString(const string& indentStyle, string& indentStart)
 	{
-		bool pretty = getLength(indent) > 0;
-		string s = "[" + (pretty ? "\n" : "");
-		JSON@ value;
-		for (uint i = 0, j = this.elements.length(); i < j; i += 1)
+		bool compact = (indentStyle.length() == 0);
+		string indent = indentStart + indentStyle;
+		string s = (compact ? "[" : "[\n");
+		for (uint i = 0, j = this.elements.length(); i < j; i++)
 		{
-			s += gap + indent + this.elements[i].toString(indent, gap + indent);
+			s += indent + this.elements[i].toString(indentStyle, indent);
 			if (i < j - 1)
 			{
-				s += "," + (pretty ? "\n" : "");
+				s += (compact ? "," : ",\n");
 			}
 		}
-		s += (pretty ? "\n" : "") + gap + "]";
+		s += (compact ? "" : "\n") + indentStart + "]";
 		return s;
 	}
 }

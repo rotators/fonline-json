@@ -1,84 +1,55 @@
 // Various stuff for string handling (for compatibility) and evaluation.
 
-// String manipulation functions.
+// Macros for manipulating raw characters in a string.
 //
-#ifdef __REV_PRE400__
-	uint8 getChar(string@ str, uint index)
-	{
-		return str[index];
-	}
-	void setChar(string@ str, uint index, uint8 value)
-	{
-		str[index] = value;
-	}
-	void pushChar(string@ str, uint8 value)
-	{
-		str.resize(str.length() + 1);
-		str[str.length() - 1] = value;
-	}
-	uint getLength(string@ str)
-	{
-		return str.length();
-	}
-#endif
-#ifndef __REV_PRE400__
-	uint8 getChar(string@ str, uint index)
-	{
-		return str.rawGet(index);
-	}
-	void setChar(string@ str, uint index, uint8 value)
-	{
-		str.rawSet(index, value);
-	}
-	void pushChar(string@ str, uint8 value)
-	{
-		str.rawResize(str.rawLength() + 1);
-		str.rawSet(str.rawLength() - 1, value);
-	}
-	uint getLength(string@ str)
-	{
-		return str.rawLength();
-	}
+#ifdef _JSON_REV_PRE400
+	#define _CharGet #(s, i)    s[i]
+	#define _CharSet #(s, i, v) s[i] = v
+	#define _CharAdd #(s, v)    s.resize(s.length() + 1); s[s.length() - 1] = v
+	#define _CharLen #(s)       s.length()
 #endif
 
-// Array with JSON-compatible escape codes of control characters.
+#ifndef _JSON_REV_PRE400
+	#define _CharGet #(s, i)    s.rawGet(i)
+	#define _CharSet #(s, i, v) s.rawSet(i, v)
+	#define _CharAdd #(s, v)    s.rawResize(s.rawLength() + 1); s.rawSet(s.rawLength() - 1, v)
+	#define _CharLen #(s)       s.rawLength()
+#endif
+
+// Array with JSON-compatible escape codes of control characters (0x00 - 0x1F)
 //
 array<string@> controlChars = {
-	"\\u0000", "\\u0001", "\\u0002", "\\u0003",
-	"\\u0004", "\\u0005", "\\u0006", "\\u0007", 
-	"\\b",     "\\t",     "\\n",     "\\u000B",
-	"\\f",     "\\r",     "\\u000E", "\\u000F",
-	"\\u0010", "\\u0011", "\\u0012", "\\u0013",
-	"\\u0014", "\\u0015", "\\u0016", "\\u0017", 
-	"\\u0018", "\\u0019", "\\u001A", "\\u001B",
-	"\\u001C", "\\u001D", "\\u001E", "\\u001F"
+	"\\u0000", "\\u0001", "\\u0002", "\\u0003", "\\u0004", "\\u0005", "\\u0006", "\\u0007", 
+	"\\b",     "\\t",     "\\n",     "\\u000B", "\\f",     "\\r",     "\\u000E", "\\u000F",
+	"\\u0010", "\\u0011", "\\u0012", "\\u0013",	"\\u0014", "\\u0015", "\\u0016", "\\u0017", 
+	"\\u0018", "\\u0019", "\\u001A", "\\u001B",	"\\u001C", "\\u001D", "\\u001E", "\\u001F"
 };
 
 // String escaping. Used in toString method of a JSON String.
 //
-string@ escapeString(string@ str)
+string@ Escape(string& s)
 {
-	string@ escapedStr = "";
-	uint len = getLength(str);
+	string@ escaped = "";
+	uint len = _CharLen(s);
 	uint8 ch = 0;
 	for (uint i = 0; i < len; i++)
 	{
-		ch = getChar(str, i);
+		ch = _CharGet(s, i);
 		if (ch == 34 || ch == 92)
 		{
-			pushChar(escapedStr, 92);
-			pushChar(escapedStr, ch);
+			_CharAdd(escaped, 92);
+			_CharAdd(escaped, ch);
 		}
 		else if (ch < 32)
 		{
-			escapedStr += controlChars[ch];
+			escaped += controlChars[ch];
 		}
 		else
 		{
-			pushChar(escapedStr, ch);
+			_CharAdd(escaped, ch);
 		}
 	}
-	return escapedStr;
+	return escaped;
 }
 
 // Converts a string to double. Used when evaluating a NUMBER token.
@@ -87,8 +58,8 @@ string@ escapeString(string@ str)
 //
 double StrToDouble(string@ str)
 {
-	int length = getLength(str);
-	int position = getLength(str) - 1;
+	int length = _CharLen(str);
+	int position = _CharLen(str) - 1;
 	int count = 0;
 	int symbol = 0;
 	int value = 0;
@@ -96,7 +67,7 @@ double StrToDouble(string@ str)
 
 	while (position >= 0)
 	{
-		symbol = getChar(str, position);
+		symbol = _CharGet(str, position);
 
 		switch (symbol)
 		{

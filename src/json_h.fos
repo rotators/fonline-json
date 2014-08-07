@@ -1,23 +1,17 @@
 #ifndef __JSON_H__
 #define __JSON_H__
 
+//	Uncomment the line below if you are using FOnline revision 399 or earlier.
+//	#define _JSON_REV_PRE400
 
-// Uncomment the line below if you are using FOnline revision 399 or earlier
-//
-// #define __REV_PRE400__ 
-
-
-// Funcdefs for callbacks of JSON::forEach
-//
-funcdef void JSONForEachKey(JSON@ value, string@ key);
+funcdef void JSONForEachKey(JSON@ value, const string& key);
 funcdef void JSONForEachIndex(JSON@ value, uint index);
 
-
-// Interface of JSON values
-//
 shared interface JSON
 {
-	// Checking the type of JSON value
+	////////////////////////////////////////////////////////////////////////////
+	//
+	//	Checking the type of a JSON value.
 	//
 	bool isUndefined();
 	bool isNull();
@@ -27,10 +21,12 @@ shared interface JSON
 	bool isObject();
 	bool isArray();
 
-	// Retrieving data from a JSON value
+	////////////////////////////////////////////////////////////////////////////
+	//
+	//	Retrieving data from a JSON value.
 	//
 	JSON@ opShr(bool& value);
-	JSON@ opShr(string@ value);
+	JSON@ opShr(string& value);
 	JSON@ opShr(int8& value);
 	JSON@ opShr(int16& value);
 	JSON@ opShr(int32& value);
@@ -42,49 +38,103 @@ shared interface JSON
 	JSON@ opShr(float& value);
 	JSON@ opShr(double& value);
 
-	// Storing data in a JSON value
+	////////////////////////////////////////////////////////////////////////////
 	//
-	JSON@ opShl(bool& value);
-	JSON@ opShl(string@ value);
-	JSON@ opShl(int8& value);
-	JSON@ opShl(int16& value);
-	JSON@ opShl(int32& value);
-	JSON@ opShl(int64& value);
-	JSON@ opShl(uint8& value);
-	JSON@ opShl(uint16& value);
-	JSON@ opShl(uint32& value);
-	JSON@ opShl(uint64& value);
-	JSON@ opShl(float& value);
-	JSON@ opShl(double& value);
-
-	// Handling JSON Objects
+	//	Storing data in a JSON value.
 	//
-	bool hasProperty(string@ key);
-	void setProperty(string@ key, JSON@ value);
-	void forEach(JSONForEachKey@ callback);
-	JSON@ opIndex(string@ key);
+	JSON@ opShl(const bool value);
+	JSON@ opShl(const string& value);
+	JSON@ opShl(const int8 value);
+	JSON@ opShl(const int16 value);
+	JSON@ opShl(const int32 value);
+	JSON@ opShl(const int64 value);
+	JSON@ opShl(const uint8 value);
+	JSON@ opShl(const uint16 value);
+	JSON@ opShl(const uint32 value);
+	JSON@ opShl(const uint64 value);
+	JSON@ opShl(const float value);
+	JSON@ opShl(const double value);
 
-	// Handling JSON Arrays
+	////////////////////////////////////////////////////////////////////////////
+	//
+	//	Stuff for JSON Objects.
+	//
+	bool hasProperty(const string& key);
+	void setProperty(const string& key, JSON@ value);
+	array<string> getKeys();
+	JSON@ opIndex(const string& key);
+
+	////////////////////////////////////////////////////////////////////////////
+	//
+	//	Stuff for JSON Arrays.
 	//
 	uint length();
 	void push(JSON@ value);
-	void forEach(JSONForEachIndex@ callback);
-	JSON@ opIndex(uint index);
+	JSON@ opIndex(const uint index);
+	
+	////////////////////////////////////////////////////////////////////////////
+	//
+	//	Because of a bug in old AngelScript, JSON::forEach is available only in
+	//	FOnline revisions 400+. Earlier revisions can use equivalent functions
+	//	implemented directly in this header file. If you want to keep the code
+	//	compatible for both cases, use _JSON_ForEach() macro for iteration.
+	//
+	#ifndef JSON_REV_PRE400
+		void forEach(JSONForEachIndex@ callback);
+		void forEach(JSONForEachKey@ callback);
+		#define _JSON_ForEach #(_value, _callback) _value.forEach(_callback)
+	#endif
 
-	// Stringification
+	////////////////////////////////////////////////////////////////////////////
+	//
+	//	Stringification - converts a JSON value into a valid JSON text.
+	//	Default indentation style is two spaces.
 	//
 	string@ toString();
-	string@ toString(string@ ind);
-	string@ toString(string@ ind, string@ gap);
+	string@ toString(const string& indentStyle);
+	string@ toString(const string& indentStyle, string& indentStart);
 }
 
-#ifndef __JSON__
-
-// Functions exported from the json module.
+////////////////////////////////////////////////////////////////////////////////
 //
-import JSON@ JSONLoad(string@ path) from "json";
-import bool JSONSave(JSON@ value, string@ path) from "json";
-import bool JSONSave(JSON@ value, string@ path, string@ indent) from "json";
+//	ForEach for revisions 399 and earlier.
+//
+#ifdef JSON_REV_PRE400
+	void JSONForEach(JSON@ value, JSONForEachIndex@ callback)
+	{
+		if (@value != null && value.isArray())
+		{
+			for (uint i = 0, j = value.length(); i < j; i += 1)
+			{
+				callback(value[i], i);
+			}
+		}
+	}
+	void JSONForEach(JSON@ value, JSONForEachKey@ callback)
+	{
+		if (@value != null && value.isObject())
+		{
+			array<string> keys = value.getKeys();
+			for (uint i = 0, j = keys.length(); i < j; i += 1)
+			{
+				callback(value[keys[i]], keys[i]);
+			}
+		}
+	}
+	#define _JSON_ForEach #(_value, _callback) JSONForEach(_value, _callback)
+#endif
 
-#endif // __JSON__
+////////////////////////////////////////////////////////////////////////////////
+//
+//	Imports
+//
+#ifndef __JSON__
+	import JSON@ JSONLoad(const string& path)
+		from "json";
+	import bool JSONSave(JSON@ value, const string& path)
+		from "json";
+	import bool JSONSave(JSON@ value, const string& path, const string& indent)
+		from "json";
+#endif
+
 #endif // __JSON_H__

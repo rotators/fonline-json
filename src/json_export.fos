@@ -1,6 +1,6 @@
 // Functions imported into other modules via json_h.fos.
 
-JSON@ JSONLoad(string@ path)
+JSON@ JSONLoad(const string& path)
 {
 	if (@undefined == null)
 	{
@@ -23,18 +23,22 @@ JSON@ JSONLoad(string@ path)
 	return @undefined;
 }
 
-bool JSONSave(JSON@ value, string@ path)
+bool JSONSave(JSON@ value, const string& path)
 {
 	return JSONSave(value, path, "  ");
 }
 
-bool JSONSave(JSON@ value, string@ path, string@ indent)
+bool JSONSave(JSON@ value, const string& path, const string& indent)
 {
+	if (@value == null || value.isUndefined())
+	{
+		return false;
+	}
 	file f;
 	if (f.open(path, "w") == 0)
 	{
 		string@ data = value.toString(indent);
-		return (uint(f.writeString(data)) == getLength(data));
+		return (uint(f.writeString(data)) == _CharLen(data));
 	}
 	return false;
 }

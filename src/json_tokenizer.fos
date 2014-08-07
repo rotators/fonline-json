@@ -60,7 +60,7 @@ class Token
 bool growToken(string@ tokenValue, uint& tokenLength, uint& offset, uint length, uint8 character)
 {
 	tokenLength += 1;
-	pushChar(tokenValue, character);
+	_CharAdd(tokenValue, character);
 	offset += 1;
 	return offset >= length;
 }
@@ -70,15 +70,15 @@ bool eatNumberToken(string@ text, uint& offset, uint length, array<Token@>@ toke
 {
 	string tokenValue = "";
 	uint tokenLength = 0;
-	
-	if (getChar(text, offset) == '-')
+
+	if (_CharGet(text, offset) == '-')
 	{
 		if (growToken(tokenValue, tokenLength, offset, length, '-'))
 		{
 			return false;
 		}
 	}
-	if (getChar(text, offset) == '0')
+	if (_CharGet(text, offset) == '0')
 	{
 		if (growToken(tokenValue, tokenLength, offset, length, '0'))
 		{
@@ -87,9 +87,9 @@ bool eatNumberToken(string@ text, uint& offset, uint length, array<Token@>@ toke
 			return true;
 		}
 	}
-	else if (getChar(text, offset) >= '1' && getChar(text, offset) <= '9')
+	else if (_CharGet(text, offset) >= '1' && _CharGet(text, offset) <= '9')
 	{
-		if (growToken(tokenValue, tokenLength, offset, length, getChar(text, offset)))
+		if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
 		{
 			tokens.insertLast(@Token(NUMBER, tokenValue));
 			offset += 1;
@@ -97,13 +97,13 @@ bool eatNumberToken(string@ text, uint& offset, uint length, array<Token@>@ toke
 		}
 		while (offset < length)
 		{
-			if (getChar(text, offset) >= '0' && getChar(text, offset) <= '9')
+			if (_CharGet(text, offset) >= '0' && _CharGet(text, offset) <= '9')
 			{
-				if (growToken(tokenValue, tokenLength, offset, length, getChar(text, offset)))
+				if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
 				{
 					tokens.insertLast(@Token(NUMBER, tokenValue));
 					offset += 1;
-					return true;	
+					return true;
 				}
 			}
 			else
@@ -112,21 +112,21 @@ bool eatNumberToken(string@ text, uint& offset, uint length, array<Token@>@ toke
 			}
 		}
 	}
-	if (getChar(text, offset) == '.')
+	if (_CharGet(text, offset) == '.')
 	{
-		if (growToken(tokenValue, tokenLength, offset, length, getChar(text, offset)))
+		if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
 		{
 			return false;
 		}
 		while (offset < length)
 		{
-			if (getChar(text, offset) >= '0' && getChar(text, offset) <= '9')
+			if (_CharGet(text, offset) >= '0' && _CharGet(text, offset) <= '9')
 			{
-				if (growToken(tokenValue, tokenLength, offset, length, getChar(text, offset)))
+				if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
 				{
 					tokens.insertLast(@Token(NUMBER, tokenValue));
 					offset += 1;
-					return true;	
+					return true;
 				}
 			}
 			else
@@ -135,21 +135,21 @@ bool eatNumberToken(string@ text, uint& offset, uint length, array<Token@>@ toke
 			}
 		}
 	}
-	if (getChar(text, offset) == 'e' || getChar(text, offset) == 'E') {
-		if (growToken(tokenValue, tokenLength, offset, length, getChar(text, offset)))
+	if (_CharGet(text, offset) == 'e' || _CharGet(text, offset) == 'E') {
+		if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
 		{
 			return false;
 		}
 	}
-	if (getChar(text, offset) == '+' || getChar(text, offset) == '-') {
-		if (growToken(tokenValue, tokenLength, offset, length, getChar(text, offset)))
+	if (_CharGet(text, offset) == '+' || _CharGet(text, offset) == '-') {
+		if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
 		{
 			return false;
 		}
 	}
-	if (getChar(text, offset) >= '0' && getChar(text, offset) <= '9')
+	if (_CharGet(text, offset) >= '0' && _CharGet(text, offset) <= '9')
 	{
-		if (growToken(tokenValue, tokenLength, offset, length, getChar(text, offset)))
+		if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
 		{
 			tokens.insertLast(@Token(NUMBER, tokenValue));
 			offset += 1;
@@ -158,9 +158,9 @@ bool eatNumberToken(string@ text, uint& offset, uint length, array<Token@>@ toke
 	}
 	while (offset < length)
 	{
-		if (getChar(text, offset) >= '0' && getChar(text, offset) <= '9')
+		if (_CharGet(text, offset) >= '0' && _CharGet(text, offset) <= '9')
 		{
-			if (growToken(tokenValue, tokenLength, offset, length, getChar(text, offset)))
+			if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
 			{
 				tokens.insertLast(@Token(NUMBER, tokenValue));
 				offset += 1;
@@ -185,25 +185,25 @@ bool eatStringToken(string@ text, uint& offset, uint length, array<Token@>@ toke
 
 	while (offset < length)
 	{
-		if (getChar(text, offset) == '"') // end of string
+		if (_CharGet(text, offset) == '"') // end of string
 		{
 			tokens.insertLast(@Token(STRING, tokenValue));
 			offset += 1;
 			return true;
 		}
-		else if (getChar(text, offset) == 92) // escape sequence
+		else if (_CharGet(text, offset) == 92) // escape sequence
 		{
 			offset += 1;
 			if (offset >= length)
 			{
 				return false;
 			}
-			switch (getChar(text, offset))
+			switch (_CharGet(text, offset))
 			{
 			case '"':
 			case '/':
 			case 92:
-				growToken(tokenValue, tokenLength, offset, length, getChar(text, offset));
+				growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset));
 				break;
 			case 'b':
 				growToken(tokenValue, tokenLength, offset, length, 8);
@@ -230,7 +230,7 @@ bool eatStringToken(string@ text, uint& offset, uint length, array<Token@>@ toke
 		}
 		else
 		{
-			growToken(tokenValue, tokenLength, offset, length, getChar(text, offset));
+			growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset));
 		}
 	}
 	return false;
@@ -239,20 +239,20 @@ bool eatStringToken(string@ text, uint& offset, uint length, array<Token@>@ toke
 
 bool eatLiteralToken(string@ text, uint& offset, string@ match, array<Token@>@ tokens)
 {
-	uint tokenLength = getLength(match);
+	uint tokenLength = _CharLen(match);
 
-	if (offset + tokenLength > getLength(text))
+	if (offset + tokenLength > _CharLen(text))
 	{
 		return false;
 	}
 	for (uint i = 1; i < tokenLength; i += 1)
 	{
-		if (getChar(text, offset + i) != getChar(match, i))
+		if (_CharGet(text, offset + i) != _CharGet(match, i))
 		{
 			return false;
 		}
 	}
-	tokens.insertLast(@Token(TokenType(getChar(text, offset)), ""));
+	tokens.insertLast(@Token(TokenType(_CharGet(text, offset)), ""));
 	offset += tokenLength;
 	return true;
 }
@@ -260,7 +260,7 @@ bool eatLiteralToken(string@ text, uint& offset, string@ match, array<Token@>@ t
 
 void eatStructuralToken(string@ text, uint& offset, array<Token@>@ tokens)
 {
-	tokens.insertLast(@Token(TokenType(getChar(text, offset)), ""));
+	tokens.insertLast(@Token(TokenType(_CharGet(text, offset)), ""));
 	offset += 1;
 }
 
@@ -270,7 +270,7 @@ void eatWhitespace(string@ text, uint& offset, uint length)
 	offset += 1;
 	while (offset < length)
 	{
-		switch (getChar(text, offset))
+		switch (_CharGet(text, offset))
 		{
 			case 9:
 			case 10:
@@ -287,13 +287,13 @@ void eatWhitespace(string@ text, uint& offset, uint length)
 
 bool tokenize(string@ text, array<Token@>@ tokens)
 {
-	uint length = getLength(text);
+	uint length = _CharLen(text);
 	uint offset = 0;
 	uint8 symbol;
 
 	while (offset < length)
 	{
-		symbol = getChar(text, offset);
+		symbol = _CharGet(text, offset);
 		switch (symbol)
 		{
 			case 9:

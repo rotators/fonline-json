@@ -1,30 +1,29 @@
-// A test of various json.fos functions. Use ASCompiler to run it:
+//	A test of various json.fos functions. Use ASCompiler to run it:
 //
-// ASCompiler -run tmain
+//	ASCompiler poems.fos -run tmain
 //
-// If you are using ASCompiler of FOnline revision 399 or earlier, make sure
-// that __REV_PRE400__ is defined:
+//	If you are using ASCompiler included with FOnline revision 399 or earlier,
+//	make sure that _JSON_REV_PRE400 is defined. You can do it in json_h.fos or
+//	with -d option:
 //
-// ASCompiler -d __REV_PRE400__ -run tmain
+//	ASCompiler poems.fos -d _JSON_REV_PRE400 -run tmain
 
 #include "../src/json.fos"
 
 void tmain()
 {
 	JSON@ poems = JSONLoad("poems.json");
-	poems.forEach(@WritePoem);
 	poems[0]["title"] << "This poem title got hacked!";
+	_JSON_ForEach(poems, @WritePoem);
 	JSONSave(poems, "tested_poems.json");
 }
 
 void WritePoem(JSON@ poem, uint index)
 {
 	string title = "No title";
-	int year = 0;
 	bool isSong = false;
 
 	poem["title"] >> title;
-	poem["year"] >> year;
 	poem["song"] >> isSong;
 
 	Log("----------------------------");
@@ -36,14 +35,14 @@ void WritePoem(JSON@ poem, uint index)
 	}
 	else
 	{
-		Log("Published: " + year);
+		Log("Published: " + poem["year"].toString());
 	}
 
 	if (isSong)
 	{
 		Log("It's a song, sing it!");
 	}
-	poem["text"].forEach(@WritePoemLine);
+	_JSON_ForEach(poem["text"], @WritePoemLine);
 }
 
 void WritePoemLine(JSON@ text, uint index)
