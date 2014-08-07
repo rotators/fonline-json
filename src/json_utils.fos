@@ -1,22 +1,26 @@
-// Various stuff for string handling (for compatibility) and evaluation.
-
-// Macros for manipulating raw characters in a string.
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Macros for manipulating raw characters in a string.
 //
 #ifdef _JSON_REV_PRE400
     #define _CharGet #(s, i)    s[i]
     #define _CharSet #(s, i, v) s[i] = v
-    #define _CharAdd #(s, v)    s.resize(s.length() + 1); s[s.length() - 1] = v
+    #define _CharAdd #(s, v)    s.resize(s.length() + 1); \
+                                s[s.length() - 1] = v
     #define _CharLen #(s)       s.length()
 #endif
 
 #ifndef _JSON_REV_PRE400
     #define _CharGet #(s, i)    s.rawGet(i)
     #define _CharSet #(s, i, v) s.rawSet(i, v)
-    #define _CharAdd #(s, v)    s.rawResize(s.rawLength() + 1); s.rawSet(s.rawLength() - 1, v)
+    #define _CharAdd #(s, v)    s.rawResize(s.rawLength() + 1); \
+                                s.rawSet(s.rawLength() - 1, v)
     #define _CharLen #(s)       s.rawLength()
 #endif
 
-// Array with JSON-compatible escape codes of control characters (0x00 - 0x1F)
+////////////////////////////////////////////////////////////////////////////////
+//
+// Array with JSON-compatible escape codes of control characters (0x00 - 0x1F).
 //
 array<string@> controlChars = {
     "\\u0000", "\\u0001", "\\u0002", "\\u0003",
@@ -29,6 +33,8 @@ array<string@> controlChars = {
     "\\u001C", "\\u001D", "\\u001E", "\\u001F"
 };
 
+////////////////////////////////////////////////////////////////////////////////
+//
 // String escaping. Used in toString method of a JSON String.
 //
 string@ Escape(string& s)
@@ -56,9 +62,12 @@ string@ Escape(string& s)
     return escaped;
 }
 
-// Converts a string to double. Used when evaluating a NUMBER token.
-// TODO: Check the precision of numbers larger than float. Change the return
-// value to bool, return the number by reference and false if conversion failed.
+////////////////////////////////////////////////////////////////////////////////
+//
+//  StrToDouble
+//  Converts a string to a double. Used when evaluating a NUMBER token.
+//  TODO: Check the precision of numbers larger than float, change return value
+//  to bool, return the number by reference and false if conversion failed.
 //
 double StrToDouble(string@ str)
 {
