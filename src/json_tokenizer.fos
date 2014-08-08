@@ -239,9 +239,9 @@ bool eatStringToken(string@ text, uint& offset, uint length, array<Token@>@ toke
 
 bool eatLiteralToken(string@ text, uint& offset, string@ match, array<Token@>@ tokens)
 {
-    uint tokenLength = _CharLen(match);
+    uint tokenLength = _CharLength(match);
 
-    if (offset + tokenLength > _CharLen(text))
+    if (offset + tokenLength > _CharLength(text))
     {
         return false;
     }
@@ -287,7 +287,7 @@ void eatWhitespace(string@ text, uint& offset, uint length)
 
 bool tokenize(string@ text, array<Token@>@ tokens)
 {
-    uint length = _CharLen(text);
+    uint length = _CharLength(text);
     uint offset = 0;
     uint8 symbol;
 

@@ -36,6 +36,11 @@ class Value : JSON
     JSON@ opShl(const float value)   { return this; }
     JSON@ opShl(const double value)  { return this; }
 
+    string@ toString()
+    {
+        return "";
+    }
+
     bool hasProperty(const string& key)              { return false; }
     void setProperty(const string& key, JSON@ value) { return; }
     array<string> getKeys()                     { array<string> k; return k; }
@@ -49,19 +54,28 @@ class Value : JSON
     void forEach(JSONForEachIndex@ callback)    { return; }
     void forEach(JSONForEachIndexAll@ callback) { return; }
 
+
     string@ stringify()
     {
-        return this.stringify("  ", "");
+        return Stringify(this, "", "");
     }
-
-    string@ stringify(const string& indentStyle)
+    string@ stringify(const string& space)
     {
-        return this.stringify(indentStyle, "");
-    }
-
-    string@ stringify(const string& indentStyle, string& indentStart)
-    {
-        return "";
+        uint length = _CharLength(space);
+        if (length > 8)
+        {
+            Log("Maximum space length exceeded.");
+            return "";
+        }
+        for (uint i = 0; i < length; i++)
+        {
+            if (!_IsWhitespace(_CharGet(space, i)))
+            {
+                Log("space can contain only whitespace characters.");
+                return "";
+            }
+        }
+        return Stringify(this, space, "");
     }
 }
 
@@ -70,6 +84,10 @@ final class Undefined : Value
     bool isUndefined()
     {
         return true;
+    }
+    string@ toString()
+    {
+        return "undefined";
     }
 }
 
@@ -80,11 +98,10 @@ final class Null : Value
         return true;
     }
 
-    string@ stringify(const string& indentStyle, string& indentStart)
+    string@ toString()
     {
         return "null";
     }
-
 }
 
 final class Boolean : Value
@@ -113,7 +130,7 @@ final class Boolean : Value
         return this;
     }
 
-    string@ stringify(const string& indentStyle, string& indentStart)
+    string@ toString()
     {
         if (value)
         {
@@ -168,14 +185,15 @@ final class Number : Value
     JSON@ opShl(const float value)  { this.value = value; return this; }
     JSON@ opShl(const double value) { this.value = value; return this; }
 
-    string@ stringify(const string& indentStyle, string& indentStart)
+    string@ toString()
     {
         string@ s = "" + this.value;
-        for (uint i = 0, j = _CharLen(s); i < j; i++)
+        for (uint i = 0, j = _CharLength(s); i < j; i++)
         {
             if (_CharGet(s, i) == ',')
             {
                 _CharSet(s, i, '.');
+                break;
             }
         }
         return s;
@@ -208,9 +226,9 @@ final class String : Value
         return this;
     }
 
-    string@ stringify(const string& indentStyle, string& indentStart)
+    string@ toString()
     {
-        return "\"" + Escape(this.value) + "\"";
+        return value;
     }
 }
 
@@ -279,26 +297,6 @@ final class Object : Value
             return @undefined;
         }
     }
-
-    string@ stringify(const string& indentStyle, string& indentStart)
-    {
-        bool compact = (indentStyle.length() == 0);
-        string indent = indentStart + indentStyle;
-        string s = (compact ? "{" : "{\n");
-        JSON@ prop;
-        for (uint i = 0, j = this.keys.length(); i < j; i++)
-        {
-            this.properties.get(this.keys[i], @prop);
-            s += indent + "\"" + this.keys[i] + (compact ? "\":" : "\": ");
-            s += prop.stringify(indentStyle, indent);
-            if (i < j - 1)
-            {
-                s += (compact ? "," : ",\n");
-            }
-        }
-        s += (compact ? "}" : "\n" + indentStart + "}");
-        return s;
-    }
 }
 
 final class Array : Value
@@ -349,22 +347,5 @@ final class Array : Value
         {
             return @undefined;
         }
-    }
-
-    string@ stringify(const string& indentStyle, string& indentStart)
-    {
-        bool compact = (indentStyle.length() == 0);
-        string indent = indentStart + indentStyle;
-        string s = (compact ? "[" : "[\n");
-        for (uint i = 0, j = this.elements.length(); i < j; i++)
-        {
-            s += indent + this.elements[i].stringify(indentStyle, indent);
-            if (i < j - 1)
-            {
-                s += (compact ? "," : ",\n");
-            }
-        }
-        s += (compact ? "" : "\n") + indentStart + "]";
-        return s;
     }
 }

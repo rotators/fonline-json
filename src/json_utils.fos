@@ -3,20 +3,25 @@
 //  Macros for manipulating raw characters in a string.
 //
 #ifdef _JSON_REV_PRE400
-    #define _CharGet #(s, i)    s[i]
-    #define _CharSet #(s, i, v) s[i] = v
-    #define _CharAdd #(s, v)    s.resize(s.length() + 1); \
-                                s[s.length() - 1] = v
-    #define _CharLen #(s)       s.length()
+    #define _CharGet    #(s, i)    s[i]
+    #define _CharSet    #(s, i, v) s[i] = v
+    #define _CharAdd    #(s, v)    s.resize(s.length() + 1); \
+                                   s[s.length() - 1] = v
+    #define _CharLength #(s)       s.length()
+    #define _CharResize #(s, v)    s.resize(v)
 #endif
 
 #ifndef _JSON_REV_PRE400
-    #define _CharGet #(s, i)    s.rawGet(i)
-    #define _CharSet #(s, i, v) s.rawSet(i, v)
-    #define _CharAdd #(s, v)    s.rawResize(s.rawLength() + 1); \
-                                s.rawSet(s.rawLength() - 1, v)
-    #define _CharLen #(s)       s.rawLength()
+    #define _CharGet    #(s, i)    s.rawGet(i)
+    #define _CharSet    #(s, i, v) s.rawSet(i, v)
+    #define _CharAdd    #(s, v)    s.rawResize(s.rawLength() + 1); \
+                                   s.rawSet(s.rawLength() - 1, v)
+    #define _CharLength #(s)       s.rawLength()
+    #define _CharResize #(s, v)    s.rawResize(v)
 #endif
+
+#define _IsWhitespace   #(c)       (c == 9 || c == 10 || c == 13 || c == 32)
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -40,7 +45,7 @@ array<string@> controlChars = {
 string@ Escape(string& s)
 {
     string@ escaped = "";
-    uint len = _CharLen(s);
+    uint len = _CharLength(s);
     uint8 ch = 0;
     for (uint i = 0; i < len; i++)
     {
@@ -71,8 +76,8 @@ string@ Escape(string& s)
 //
 double StrToDouble(string@ str)
 {
-    int length = _CharLen(str);
-    int position = _CharLen(str) - 1;
+    int length = _CharLength(str);
+    int position = _CharLength(str) - 1;
     int count = 0;
     int symbol = 0;
     int value = 0;
@@ -129,4 +134,60 @@ double StrToDouble(string@ str)
         position -= 1;
     }
     return double(value) * double(pow(10, exponent));
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Stringification
+//  Converts a JSON value(s) back into a JSON text.
+//
+string@ Stringify(JSON@ value, const string& space, string& indent)
+{
+    if (@value == null || value.isUndefined())
+    {
+        return "";
+    }
+    else if (value.isNull() || value.isBoolean() || value.isNumber())
+    {
+        return value.toString();
+    }
+    else if (value.isString())
+    {
+        return "\"" + Escape(value.toString()) + "\"";
+    }
+
+    string s = "";
+    bool compact = (space.length() == 0);
+    string newIndent = indent + space;
+
+    if (value.isObject())
+    {
+        s = (compact ? "{" : "{\n");
+        array<string> keys = value.getKeys();
+        for (uint i = 0, j = keys.length(); i < j; i++)
+        {
+            s += newIndent + "\"" + keys[i] + (compact ? "\":" : "\": ");
+            s += Stringify(value[keys[i]], space, newIndent);
+            if (i < j - 1)
+            {
+                s += (compact ? "," : ",\n");
+            }
+        }
+        s += (compact ? "}" : "\n" + indent + "}");
+    }
+    else if (value.isArray())
+    {
+        s = (compact ? "[" : "[\n");
+        for (uint i = 0, j = value.length(); i < j; i += 1)
+        {
+            s += newIndent + Stringify(value[i], space, newIndent);
+            if (i < j - 1)
+            {
+                s += (compact ? "," : ",\n");
+            }
+        }
+        s += (compact ? "]" : "\n" + indent + "]");
+    }
+    return s;
 }

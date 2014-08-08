@@ -52,6 +52,8 @@ shared interface JSON
     JSON@ opShl(const float value);
     JSON@ opShl(const double value);
 
+    string@ toString();
+
     ////////////////////////////////////////////////////////////////////////////
     //
     //    Stuff for JSON Objects.
@@ -87,13 +89,10 @@ shared interface JSON
     ////////////////////////////////////////////////////////////////////////////
     //
     //  Stringification - converts a JSON value into a valid JSON text.
-    //  Default indentation style is two spaces.
-    //  TODO: Right now it's possible to pass anything to indentStyle and
-    //  indentStart. At least indentStyle should be checked.
+    //  Use space argument to control style of the indentation.
     //
     string@ stringify();
-    string@ stringify(const string& indentStyle);
-    string@ stringify(const string& indentStyle, string& indentStart);
+    string@ stringify(const string& space);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
