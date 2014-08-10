@@ -9,3 +9,7 @@ test/tested_*.json
 *.suo
 *.vcproj
 *.user
+
+# Ignore executables
+*.exe
+*.bat

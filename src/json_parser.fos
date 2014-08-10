@@ -1,114 +1,145 @@
-// Takes array of JSON tokens and produces JSON values
+/******************************************************************************
+ *                                                                            *
+ *  PARSER                                                                    *
+ *  Takes an array of JSON tokens and produces a structure of JSON values.    *
+ *                                                                            *
+ ******************************************************************************/
 
-JSON@ parseValue(array<Token@>@ tokens, uint& ti)
-{
-    switch (tokens[ti].type)
-    {
-    case NULL:
-        ti += 1;
-        return @Null();
-    case TRUE:
-        ti += 1;
-        return @Boolean(true);
-    case FALSE:
-        ti += 1;
-        return @Boolean(false);
-    case NUMBER:
-    {
-        JSON@ value = Number(StrToDouble(tokens[ti].value));
-        ti += 1;
-        return @value;
-    }
-    case STRING:
-    {
-        JSON@ value = String(tokens[ti].value);
-        ti += 1;
-        return @value;
-    }
-    case LEFT_CURLY_BRACKET:
-    {
-        JSON@ obj = Object();
-        while (ti < tokens.length())
-        {
-            ti += 1;
-            if (ti >= tokens.length()) return @undefined;
-            if (tokens[ti].type == RIGHT_CURLY_BRACKET)
-            {
-                return @obj;
-            }
-            string key = tokens[ti].value;
-
-            ti += 1;
-            if (ti >= tokens.length()) return @undefined;
-            if (tokens[ti].type != COLON) return @undefined;
-
-            ti += 1;
-            if (ti >= tokens.length())
-            {
-                return @undefined;
-            }
-            JSON@ val = parseValue(tokens, ti);
-
-            obj.setProperty(key, @val);
-            if (ti >= tokens.length())
-            {
-                return @undefined;
-            }
-
-            if (tokens[ti].type == RIGHT_CURLY_BRACKET)
-            {
-                ti += 1;
-                return @obj;
-            }
-            if (tokens[ti].type != COMMA)
-            {
-                return @undefined;
-            }
-        }
-    }
-    case LEFT_SQUARE_BRACKET:
-    {
-        JSON@ arr = Array();
-        while (ti < tokens.length())
-        {
-            ti += 1;
-            if (ti >= tokens.length()) return @undefined;
-            if (tokens[ti].type == RIGHT_SQUARE_BRACKET)
-            {
-                ti += 1;
-                return @arr;
-            }
-            JSON@ val = parseValue(tokens, ti);
-            arr.push(@val);
-            if (ti >= tokens.length()) return @undefined;
-            if (tokens[ti].type == RIGHT_SQUARE_BRACKET)
-            {
-                ti += 1;
-                return @arr;
-            }
-            if (tokens[ti].type != COMMA)
-            {
-                return @undefined;
-            }
-        }
-    }
-
-    default:
-        return @undefined;
-    }
-
-    return @undefined;
-
-}
-
-
+/**
+ * Initializes the parser.
+ *
+ * Resets the token index and calls parseValue() for the first token.
+ */
 JSON@ parse(array<Token@>@ tokens)
 {
     if (tokens.length() == 0)
     {
         return @undefined;
     }
-    uint ti = 0;
-    return @parseValue(tokens, ti);
+    uint tokenIndex = 0;
+    return @parseValue(tokens, tokenIndex);
 }
 
+/**
+ * Parses one or more tokens and returns a JSON value.
+ *
+ * To parse arrays and objects the function uses recursion.
+ */
+JSON@ parseValue(array<Token@>@ tokens, uint& tokenIndex)
+{
+    switch (tokens[tokenIndex].type)
+    {
+        case NULL:
+            tokenIndex += 1;
+            return @Null();
+        case TRUE:
+            tokenIndex += 1;
+            return @Boolean(true);
+        case FALSE:
+            tokenIndex += 1;
+            return @Boolean(false);
+        case NUMBER:
+        {
+            JSON@ value = Number(StrToDouble(tokens[tokenIndex].value));
+            tokenIndex += 1;
+            return @value;
+        }
+        case STRING:
+        {
+            JSON@ value = String(tokens[tokenIndex].value);
+            tokenIndex += 1;
+            return @value;
+        }
+        case LEFT_CURLY_BRACKET:
+        {
+            JSON@ obj = Object();
+            while (tokenIndex < tokens.length())
+            {
+                tokenIndex += 1;
+                if (tokenIndex >= tokens.length())
+                {
+                    Log("JSON parser: expected object key or end of object.");
+                    return @undefined;
+                }
+                if (tokens[tokenIndex].type == RIGHT_CURLY_BRACKET)
+                {
+                    return @obj;
+                }
+                string key = tokens[tokenIndex].value;
+
+                tokenIndex += 1;
+                if (tokenIndex >= tokens.length())
+                {
+                    Log("JSON parser: expected ':', found end of tokens.");
+                    return @undefined;
+                }
+                if (tokens[tokenIndex].type != COLON)
+                {
+                    Log("JSON parser: expected ':', found other token.");
+                    return @undefined;
+                }
+
+                tokenIndex += 1;
+                if (tokenIndex >= tokens.length())
+                {
+                    Log("JSON parser: expected a value, found end of tokens.");
+                    return @undefined;
+                }
+                JSON@ val = parseValue(tokens, tokenIndex);
+
+                obj.setProperty(key, @val);
+                if (tokenIndex >= tokens.length())
+                {
+                    Log("JSON parser: expected ',' or '}', found tokens end.");
+                    return @undefined;
+                }
+
+                if (tokens[tokenIndex].type == RIGHT_CURLY_BRACKET)
+                {
+                    tokenIndex += 1;
+                    return @obj;
+                }
+                if (tokens[tokenIndex].type != COMMA)
+                {
+                    Log("JSON parser: expected ',' found other token.");
+                    return @undefined;
+                }
+            }
+        }
+        case LEFT_SQUARE_BRACKET:
+        {
+            JSON@ arr = Array();
+            while (tokenIndex < tokens.length())
+            {
+                tokenIndex += 1;
+                if (tokenIndex >= tokens.length()) return @undefined;
+                if (tokens[tokenIndex].type == RIGHT_SQUARE_BRACKET)
+                {
+                    tokenIndex += 1;
+                    return @arr;
+                }
+                JSON@ val = parseValue(tokens, tokenIndex);
+                arr.push(@val);
+                if (tokenIndex >= tokens.length())
+                {
+                    Log("JSON parser: trailing comma in array.");
+                    return @undefined;
+                }
+                if (tokens[tokenIndex].type == RIGHT_SQUARE_BRACKET)
+                {
+                    tokenIndex += 1;
+                    return @arr;
+                }
+                if (tokens[tokenIndex].type != COMMA)
+                {
+                    Log("JSON parser: expected ',' or ']', found other token.");
+                    return @undefined;
+                }
+            }
+        }
+    }
+
+    Log("JSON parser: unexpected token.");
+    return @undefined;
+
+}

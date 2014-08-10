@@ -1,13 +1,17 @@
+/******************************************************************************
+ *                                                                            *
+ *  FOnline-JSON header                                                       *
+ *                                                                            *
+ ******************************************************************************/
+
 #ifndef __JSON_H__
 #define __JSON_H__
 
-//  Uncomment the line below if you are using FOnline revision 399 or earlier.
+//  If you are using FOnline revision 399 or earlier, uncomment the line below:
 //  #define _JSON_REV_PRE400
 
 shared interface JSON
 {
-    ////////////////////////////////////////////////////////////////////////////
-    //
     //  Checking the type of a JSON value.
     //
     bool isUndefined();
@@ -18,8 +22,6 @@ shared interface JSON
     bool isObject();
     bool isArray();
 
-    ////////////////////////////////////////////////////////////////////////////
-    //
     //  Retrieving data from a JSON value.
     //
     JSON@ opShr(bool& value);
@@ -34,9 +36,20 @@ shared interface JSON
     JSON@ opShr(uint64& value);
     JSON@ opShr(float& value);
     JSON@ opShr(double& value);
+    JSON@ opShr(array<bool>& value);
+    JSON@ opShr(array<string>& value);
+    JSON@ opShr(array<string@>& value);
+    JSON@ opShr(array<int8>& value);
+    JSON@ opShr(array<int16>& value);
+    JSON@ opShr(array<int32>& value);
+    JSON@ opShr(array<int64>& value);
+    JSON@ opShr(array<uint8>& value);
+    JSON@ opShr(array<uint16>& value);
+    JSON@ opShr(array<uint32>& value);
+    JSON@ opShr(array<uint64>& value);
+    JSON@ opShr(array<float>& value);
+    JSON@ opShr(array<double>& value);
 
-    ////////////////////////////////////////////////////////////////////////////
-    //
     //    Storing data in a JSON value.
     //
     JSON@ opShl(const bool value);
@@ -52,10 +65,6 @@ shared interface JSON
     JSON@ opShl(const float value);
     JSON@ opShl(const double value);
 
-    string@ toString();
-
-    ////////////////////////////////////////////////////////////////////////////
-    //
     //    Stuff for JSON Objects.
     //
     bool hasProperty(const string& key);
@@ -63,16 +72,12 @@ shared interface JSON
     array<string> getKeys();
     JSON@ opIndex(const string& key);
 
-    ////////////////////////////////////////////////////////////////////////////
-    //
     //  Stuff for JSON Arrays.
     //
     uint length();
     void push(JSON@ value);
     JSON@ opIndex(const uint index);
     
-    ////////////////////////////////////////////////////////////////////////////
-    //
     //  Because of a bug in old AngelScript, JSON::forEach is available only in
     //  FOnline revisions 400+. Earlier revisions can use equivalent functions
     //  implemented directly in this header file. If you want to keep the code
@@ -86,13 +91,16 @@ shared interface JSON
         #define _JSON_ForEach #(_value, _callback) _value.forEach(_callback)
     #endif
 
-    ////////////////////////////////////////////////////////////////////////////
-    //
     //  Stringification - converts a JSON value into a valid JSON text.
     //  Use space argument to control style of the indentation.
     //
     string@ stringify();
     string@ stringify(const string& space);
+
+    //  File saving
+    //
+    //
+    bool save(const string& path);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -161,13 +169,8 @@ funcdef void JSONForEachIndexAll(JSON@ value, uint index, JSON@ all);
 //  Imports
 //
 #ifndef __JSON__
-    import JSON@ JSONLoad(const string& path)
-        from "json";
-    import bool JSONSave(JSON@ value, const string& path)
-        from "json";
-    import bool JSONSave(JSON@ value, const string& path, const string& indent)
-        from "json";
+    import JSON@ JSONParse(const string& text) from "json";
+    import JSON@ JSONLoad(const string& path) from "json";
 #endif
-
 
 #endif // __JSON_H__

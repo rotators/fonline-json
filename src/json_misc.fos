@@ -1,7 +1,14 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//  Macros for manipulating raw characters in a string.
-//
+/******************************************************************************
+ *                                                                            *
+ *  Miscellaneous macros and functions used in the module.                    *
+ *                                                                            *
+ ******************************************************************************/
+
+/**
+ *  Compatibility macros.
+ *
+ *  Macros for manipulating raw characters in a string.
+ */
 #ifdef _JSON_REV_PRE400
     #define _CharGet    #(s, i)    s[i]
     #define _CharSet    #(s, i, v) s[i] = v
@@ -20,51 +27,54 @@
     #define _CharResize #(s, v)    s.rawResize(v)
 #endif
 
+/**
+ *  Other macros.
+ */
 #define _IsWhitespace   #(c)       (c == 9 || c == 10 || c == 13 || c == 32)
 
-
-////////////////////////////////////////////////////////////////////////////////
-//
-// Array with JSON-compatible escape codes of control characters (0x00 - 0x1F).
-//
-array<string@> controlChars = {
-    "\\u0000", "\\u0001", "\\u0002", "\\u0003",
-    "\\u0004", "\\u0005", "\\u0006", "\\u0007", 
-    "\\b",     "\\t",     "\\n",     "\\u000B",
-    "\\f",     "\\r",     "\\u000E", "\\u000F",
-    "\\u0010", "\\u0011", "\\u0012", "\\u0013",
-    "\\u0014", "\\u0015", "\\u0016", "\\u0017", 
-    "\\u0018", "\\u0019", "\\u001A", "\\u001B",
-    "\\u001C", "\\u001D", "\\u001E", "\\u001F"
+/**
+ *  controlChars table.
+ *
+ *  Array with JSON-compatible escape codes of control characters (0x00 - 0x1F).
+ *  Used by Escape() function.
+ */
+array<string> controlChars = {
+    "\\u0000",  "\\u0001",  "\\u0002",  "\\u0003",
+    "\\u0004",  "\\u0005",  "\\u0006",  "\\u0007",
+    "\\b",      "\\t",      "\\n",      "\\u000B",
+    "\\f",      "\\r",      "\\u000E",  "\\u000F",
+    "\\u0010",  "\\u0011",  "\\u0012",  "\\u0013",
+    "\\u0014",  "\\u0015",  "\\u0016",  "\\u0017",
+    "\\u0018",  "\\u0019",  "\\u001A",  "\\u001B",
+    "\\u001C",  "\\u001D",  "\\u001E",  "\\u001F"
 };
 
-////////////////////////////////////////////////////////////////////////////////
-//
-// String escaping. Used in toString method of a JSON String.
-//
-string@ Escape(string& s)
+/**
+ *  JSON String escaping.
+ */
+string@ EscapeString(string& str)
 {
-    string@ escaped = "";
-    uint len = _CharLength(s);
+    string@ escapedString = "";
+    uint length = _CharLength(str);
     uint8 ch = 0;
-    for (uint i = 0; i < len; i++)
+    for (uint i = 0; i < length; i++)
     {
-        ch = _CharGet(s, i);
+        ch = _CharGet(str, i);
         if (ch == 34 || ch == 92)
         {
-            _CharAdd(escaped, 92);
-            _CharAdd(escaped, ch);
+            _CharAdd(escapedString, 92);
+            _CharAdd(escapedString, ch);
         }
         else if (ch < 32)
         {
-            escaped += controlChars[ch];
+            escapedString += controlChars[ch];
         }
         else
         {
-            _CharAdd(escaped, ch);
+            _CharAdd(escapedString, ch);
         }
     }
-    return escaped;
+    return escapedString;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -140,7 +150,7 @@ double StrToDouble(string@ str)
 ////////////////////////////////////////////////////////////////////////////////
 //
 //  Stringification
-//  Converts a JSON value(s) back into a JSON text.
+//  Converts a JSON value(s) into a JSON text.
 //
 string@ Stringify(JSON@ value, const string& space, string& indent)
 {
@@ -148,13 +158,42 @@ string@ Stringify(JSON@ value, const string& space, string& indent)
     {
         return "";
     }
-    else if (value.isNull() || value.isBoolean() || value.isNumber())
+    else if (value.isNull())
     {
-        return value.toString();
+
+        return "null";
+    }
+    else if (value.isBoolean())
+    {
+        bool v = false;
+        value >> v;
+        if (v)
+        {
+            return "true";
+        }
+        return "false";
+    }
+    else if (value.isNumber())
+    {
+        double v = 0;
+        value >> v;
+        string s = "" + v;
+        for (uint i = 0, j = _CharLength(s); i < j; i++)
+        {
+            if (_CharGet(s, i) == ',')
+            {
+                _CharSet(s, i, '.');
+                break;
+            }
+        }
+        return s;
     }
     else if (value.isString())
     {
-        return "\"" + Escape(value.toString()) + "\"";
+        string s;
+        value >> s;
+        s = "\"" + EscapeString(s) + "\"";
+        return s;
     }
 
     string s = "";
@@ -191,3 +230,4 @@ string@ Stringify(JSON@ value, const string& space, string& indent)
     }
     return s;
 }
+

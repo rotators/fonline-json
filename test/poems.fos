@@ -15,7 +15,7 @@ void tmain()
     JSON@ poems = JSONLoad("poems.json");
     poems[0]["title"] << "This poem title got hacked!";
     _JSON_ForEach(poems, @WritePoem);
-    JSONSave(poems, "tested_poems.json");
+    poems.save("tested_poems.json");
 }
 
 void WritePoem(JSON@ poem, uint index)

@@ -1,12 +1,21 @@
+/******************************************************************************
+ *                                                                            *
+ *  FOnline-JSON                                                  09-08-2014  *
+ *                                                                            *
+ *  Module allowing you to load, save and work with JSON data.                *
+ *  Repository: <https://github.com/rotators/fonline-json>                    *
+ *                                                                            *
+ ******************************************************************************/
+
 #ifndef __JSON__
 #define __JSON__
 
 #include "json_h.fos"
 
-#include "json_utils.fos"
+#include "json_misc.fos"
 #include "json_values.fos"
 #include "json_tokenizer.fos"
-#include "json_parser.fos"
+#include "json_parser.fos"      
 #include "json_export.fos"
 
 #endif // __JSON__

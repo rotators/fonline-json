@@ -1,45 +1,59 @@
+/******************************************************************************
+ *                                                                            *
+ *  JSON VALUE CLASSES                                                        *
+ *                                                                            *
+ ******************************************************************************/
+
 JSON@ undefined;
 
 class Value : JSON
 {
-    bool isUndefined() { return false; }
-    bool isNull()      { return false; }
-    bool isBoolean()   { return false; }
-    bool isString()    { return false; }
-    bool isNumber()    { return false; }
-    bool isObject()    { return false; }
-    bool isArray()     { return false; }
+    bool isUndefined()                 { return false; }
+    bool isNull()                      { return false; }
+    bool isBoolean()                   { return false; }
+    bool isString()                    { return false; }
+    bool isNumber()                    { return false; }
+    bool isObject()                    { return false; }
+    bool isArray()                     { return false; }
 
-    JSON@ opShr(bool& value)   { return this; }
-    JSON@ opShr(string& value) { return this; }
-    JSON@ opShr(int8& value)   { return this; }
-    JSON@ opShr(int16& value)  { return this; }
-    JSON@ opShr(int32& value)  { return this; }
-    JSON@ opShr(int64& value)  { return this; }
-    JSON@ opShr(uint8& value)  { return this; }
-    JSON@ opShr(uint16& value) { return this; }
-    JSON@ opShr(uint32& value) { return this; }
-    JSON@ opShr(uint64& value) { return this; }
-    JSON@ opShr(float& value)  { return this; }
-    JSON@ opShr(double& value) { return this; }
+    JSON@ opShr(bool& value)           { return this; }
+    JSON@ opShr(string& value)         { return this; }
+    JSON@ opShr(int8& value)           { return this; }
+    JSON@ opShr(int16& value)          { return this; }
+    JSON@ opShr(int32& value)          { return this; }
+    JSON@ opShr(int64& value)          { return this; }
+    JSON@ opShr(uint8& value)          { return this; }
+    JSON@ opShr(uint16& value)         { return this; }
+    JSON@ opShr(uint32& value)         { return this; }
+    JSON@ opShr(uint64& value)         { return this; }
+    JSON@ opShr(float& value)          { return this; }
+    JSON@ opShr(double& value)         { return this; }
+    JSON@ opShr(array<bool>& value)    { return this; }
+    JSON@ opShr(array<string>& value)  { return this; }
+    JSON@ opShr(array<string@>& value) { return this; }
+    JSON@ opShr(array<int8>& value)    { return this; }
+    JSON@ opShr(array<int16>& value)   { return this; }
+    JSON@ opShr(array<int32>& value)   { return this; }
+    JSON@ opShr(array<int64>& value)   { return this; }
+    JSON@ opShr(array<uint8>& value)   { return this; }
+    JSON@ opShr(array<uint16>& value)  { return this; }
+    JSON@ opShr(array<uint32>& value)  { return this; }
+    JSON@ opShr(array<uint64>& value)  { return this; }
+    JSON@ opShr(array<float>& value)   { return this; }
+    JSON@ opShr(array<double>& value)  { return this; }
 
-    JSON@ opShl(const bool value)    { return this; }
-    JSON@ opShl(const string& value) { return this; }
-    JSON@ opShl(const int8 value)    { return this; }
-    JSON@ opShl(const int16 value)   { return this; }
-    JSON@ opShl(const int32 value)   { return this; }
-    JSON@ opShl(const int64 value)   { return this; }
-    JSON@ opShl(const uint8 value)   { return this; }
-    JSON@ opShl(const uint16 value)  { return this; }
-    JSON@ opShl(const uint32 value)  { return this; }
-    JSON@ opShl(const uint64 value)  { return this; }
-    JSON@ opShl(const float value)   { return this; }
-    JSON@ opShl(const double value)  { return this; }
-
-    string@ toString()
-    {
-        return "";
-    }
+    JSON@ opShl(const bool value)      { return this; }
+    JSON@ opShl(const string& value)   { return this; }
+    JSON@ opShl(const int8 value)      { return this; }
+    JSON@ opShl(const int16 value)     { return this; }
+    JSON@ opShl(const int32 value)     { return this; }
+    JSON@ opShl(const int64 value)     { return this; }
+    JSON@ opShl(const uint8 value)     { return this; }
+    JSON@ opShl(const uint16 value)    { return this; }
+    JSON@ opShl(const uint32 value)    { return this; }
+    JSON@ opShl(const uint64 value)    { return this; }
+    JSON@ opShl(const float value)     { return this; }
+    JSON@ opShl(const double value)    { return this; }
 
     bool hasProperty(const string& key)              { return false; }
     void setProperty(const string& key, JSON@ value) { return; }
@@ -54,11 +68,7 @@ class Value : JSON
     void forEach(JSONForEachIndex@ callback)    { return; }
     void forEach(JSONForEachIndexAll@ callback) { return; }
 
-
-    string@ stringify()
-    {
-        return Stringify(this, "", "");
-    }
+    string@ stringify() { return Stringify(this, "", ""); }
     string@ stringify(const string& space)
     {
         uint length = _CharLength(space);
@@ -77,6 +87,21 @@ class Value : JSON
         }
         return Stringify(this, space, "");
     }
+
+    bool save(const string& path)
+    {
+        if (this.isUndefined())
+        {
+            return false;
+        }
+        file f;
+        if (f.open(path, "w") == 0)
+        {
+            string@ text = this.stringify("  ");
+            return (uint(f.writeString(text)) == _CharLength(text));
+        }
+        return false;
+    }
 }
 
 final class Undefined : Value
@@ -85,10 +110,6 @@ final class Undefined : Value
     {
         return true;
     }
-    string@ toString()
-    {
-        return "undefined";
-    }
 }
 
 final class Null : Value
@@ -96,11 +117,6 @@ final class Null : Value
     bool isNull()
     {
         return true;
-    }
-
-    string@ toString()
-    {
-        return "null";
     }
 }
 
@@ -128,18 +144,6 @@ final class Boolean : Value
     {
         this.value = value;
         return this;
-    }
-
-    string@ toString()
-    {
-        if (value)
-        {
-            return "true";
-        }
-        else
-        {
-            return "false";
-        }
     }
 }
 
@@ -184,20 +188,6 @@ final class Number : Value
     JSON@ opShl(const uint64 value) { this.value = value; return this; }
     JSON@ opShl(const float value)  { this.value = value; return this; }
     JSON@ opShl(const double value) { this.value = value; return this; }
-
-    string@ toString()
-    {
-        string@ s = "" + this.value;
-        for (uint i = 0, j = _CharLength(s); i < j; i++)
-        {
-            if (_CharGet(s, i) == ',')
-            {
-                _CharSet(s, i, '.');
-                break;
-            }
-        }
-        return s;
-    }
 }
 
 final class String : Value
@@ -224,11 +214,6 @@ final class String : Value
     {
         this.value = value;
         return this;
-    }
-
-    string@ toString()
-    {
-        return value;
     }
 }
 
@@ -307,6 +292,36 @@ final class Array : Value
     {
         return true;
     }
+
+    #define _RetrieveArray #(_type, _isType, _init)                            \
+    JSON@ opShr(array<_type>& retrieve)                                        \
+    {                                                                          \
+        for (uint i = 0, j = this.elements.length(); i < j; i++)               \
+        {                                                                      \
+            if (this.elements[i]._isType())                                    \
+            {                                                                  \
+                _type value = _init;                                           \
+                this.elements[i] >> value;                                     \
+                retrieve.insertLast(value);                                    \
+            }                                                                  \
+                                                                               \
+        }                                                                      \
+        return this;                                                           \
+    }
+
+    _RetrieveArray(bool, isBoolean, false);
+    _RetrieveArray(string, isString, "");
+    _RetrieveArray(string@, isString, "");
+    _RetrieveArray(int8, isNumber, 0);
+    _RetrieveArray(int16, isNumber, 0);
+    _RetrieveArray(int32, isNumber, 0);
+    _RetrieveArray(int64, isNumber, 0);
+    _RetrieveArray(uint8, isNumber, 0);
+    _RetrieveArray(uint16, isNumber, 0);
+    _RetrieveArray(uint32, isNumber, 0);
+    _RetrieveArray(uint64, isNumber, 0);
+    _RetrieveArray(float, isNumber, 0);
+    _RetrieveArray(double, isNumber, 0);
 
     uint length()
     {

@@ -1,0 +1,9 @@
+// ASCompiler tabs.fos -run tmain
+// ASCompiler tabs.fos -d _JSON_REV_PRE400 -run tmain
+
+#include "../src/json.fos"
+
+void tmain()
+{
+    JSON@ tabs = JSONLoad("tabs.json");
+}
