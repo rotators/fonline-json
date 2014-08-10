@@ -13,3 +13,6 @@ test/tested_*.json
 # Ignore executables
 *.exe
 *.bat
+
+# Releases
+releases
