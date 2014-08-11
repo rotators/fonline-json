@@ -300,6 +300,17 @@ bool tokenize(const string& text, array<Token@>@ tokens)
     uint offset = 0;
     uint8 symbol;
 
+    // Skip UTF-8 BOM
+    if (length > 2)
+    {
+        if (_CharGet(text, 0) == 239 &&
+            _CharGet(text, 1) == 187 &&
+            _CharGet(text, 2) == 191)
+        {
+            offset += 3;
+        }
+    }
+
     while (offset < length)
     {
         symbol = _CharGet(text, offset);
