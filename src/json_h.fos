@@ -64,6 +64,19 @@ shared interface JSON
     JSON@ opShl(const uint64 value);
     JSON@ opShl(const float value);
     JSON@ opShl(const double value);
+    JSON@ opShl(const array<bool>& value);
+    JSON@ opShl(const array<string>& value);
+    JSON@ opShl(const array<string@>& value);
+    JSON@ opShl(const array<int8>& value);
+    JSON@ opShl(const array<int16>& value);
+    JSON@ opShl(const array<int32>& value);
+    JSON@ opShl(const array<int64>& value);
+    JSON@ opShl(const array<uint8>& value);
+    JSON@ opShl(const array<uint16>& value);
+    JSON@ opShl(const array<uint32>& value);
+    JSON@ opShl(const array<uint64>& value);
+    JSON@ opShl(const array<float>& value);
+    JSON@ opShl(const array<double>& value);
 
     //    Stuff for JSON Objects.
     //

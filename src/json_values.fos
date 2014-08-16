@@ -16,44 +16,57 @@ class Value : JSON
     bool isObject()                    { return false; }
     bool isArray()                     { return false; }
 
-    JSON@ opShr(bool& value)           { return this; }
-    JSON@ opShr(string& value)         { return this; }
-    JSON@ opShr(int8& value)           { return this; }
-    JSON@ opShr(int16& value)          { return this; }
-    JSON@ opShr(int32& value)          { return this; }
-    JSON@ opShr(int64& value)          { return this; }
-    JSON@ opShr(uint8& value)          { return this; }
-    JSON@ opShr(uint16& value)         { return this; }
-    JSON@ opShr(uint32& value)         { return this; }
-    JSON@ opShr(uint64& value)         { return this; }
-    JSON@ opShr(float& value)          { return this; }
-    JSON@ opShr(double& value)         { return this; }
-    JSON@ opShr(array<bool>& value)    { return this; }
-    JSON@ opShr(array<string>& value)  { return this; }
-    JSON@ opShr(array<string@>& value) { return this; }
-    JSON@ opShr(array<int8>& value)    { return this; }
-    JSON@ opShr(array<int16>& value)   { return this; }
-    JSON@ opShr(array<int32>& value)   { return this; }
-    JSON@ opShr(array<int64>& value)   { return this; }
-    JSON@ opShr(array<uint8>& value)   { return this; }
-    JSON@ opShr(array<uint16>& value)  { return this; }
-    JSON@ opShr(array<uint32>& value)  { return this; }
-    JSON@ opShr(array<uint64>& value)  { return this; }
-    JSON@ opShr(array<float>& value)   { return this; }
-    JSON@ opShr(array<double>& value)  { return this; }
+    JSON@ opShr(bool& value)                 { return this; }
+    JSON@ opShr(string& value)               { return this; }
+    JSON@ opShr(int8& value)                 { return this; }
+    JSON@ opShr(int16& value)                { return this; }
+    JSON@ opShr(int32& value)                { return this; }
+    JSON@ opShr(int64& value)                { return this; }
+    JSON@ opShr(uint8& value)                { return this; }
+    JSON@ opShr(uint16& value)               { return this; }
+    JSON@ opShr(uint32& value)               { return this; }
+    JSON@ opShr(uint64& value)               { return this; }
+    JSON@ opShr(float& value)                { return this; }
+    JSON@ opShr(double& value)               { return this; }
+    JSON@ opShr(array<bool>& value)          { return this; }
+    JSON@ opShr(array<string>& value)        { return this; }
+    JSON@ opShr(array<string@>& value)       { return this; }
+    JSON@ opShr(array<int8>& value)          { return this; }
+    JSON@ opShr(array<int16>& value)         { return this; }
+    JSON@ opShr(array<int32>& value)         { return this; }
+    JSON@ opShr(array<int64>& value)         { return this; }
+    JSON@ opShr(array<uint8>& value)         { return this; }
+    JSON@ opShr(array<uint16>& value)        { return this; }
+    JSON@ opShr(array<uint32>& value)        { return this; }
+    JSON@ opShr(array<uint64>& value)        { return this; }
+    JSON@ opShr(array<float>& value)         { return this; }
+    JSON@ opShr(array<double>& value)        { return this; }
 
-    JSON@ opShl(const bool value)      { return this; }
-    JSON@ opShl(const string& value)   { return this; }
-    JSON@ opShl(const int8 value)      { return this; }
-    JSON@ opShl(const int16 value)     { return this; }
-    JSON@ opShl(const int32 value)     { return this; }
-    JSON@ opShl(const int64 value)     { return this; }
-    JSON@ opShl(const uint8 value)     { return this; }
-    JSON@ opShl(const uint16 value)    { return this; }
-    JSON@ opShl(const uint32 value)    { return this; }
-    JSON@ opShl(const uint64 value)    { return this; }
-    JSON@ opShl(const float value)     { return this; }
-    JSON@ opShl(const double value)    { return this; }
+    JSON@ opShl(const bool value)            { return this; }
+    JSON@ opShl(const string& value)         { return this; }
+    JSON@ opShl(const int8 value)            { return this; }
+    JSON@ opShl(const int16 value)           { return this; }
+    JSON@ opShl(const int32 value)           { return this; }
+    JSON@ opShl(const int64 value)           { return this; }
+    JSON@ opShl(const uint8 value)           { return this; }
+    JSON@ opShl(const uint16 value)          { return this; }
+    JSON@ opShl(const uint32 value)          { return this; }
+    JSON@ opShl(const uint64 value)          { return this; }
+    JSON@ opShl(const float value)           { return this; }
+    JSON@ opShl(const double value)          { return this; }
+    JSON@ opShl(const array<bool>& value)    { return this; }
+    JSON@ opShl(const array<string>& value)  { return this; }
+    JSON@ opShl(const array<string@>& value) { return this; }
+    JSON@ opShl(const array<int8>& value)    { return this; }
+    JSON@ opShl(const array<int16>& value)   { return this; }
+    JSON@ opShl(const array<int32>& value)   { return this; }
+    JSON@ opShl(const array<int64>& value)   { return this; }
+    JSON@ opShl(const array<uint8>& value)   { return this; }
+    JSON@ opShl(const array<uint16>& value)  { return this; }
+    JSON@ opShl(const array<uint32>& value)  { return this; }
+    JSON@ opShl(const array<uint64>& value)  { return this; }
+    JSON@ opShl(const array<float>& value)   { return this; }
+    JSON@ opShl(const array<double>& value)  { return this; }
 
     bool hasProperty(const string& key)              { return false; }
     void setProperty(const string& key, JSON@ value) { return; }
