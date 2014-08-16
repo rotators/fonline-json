@@ -212,7 +212,7 @@ final class String : Value
 {
     private string value;
 
-    String(string@ value)
+    String(const string& value)
     {
         this.value = value;
     }
@@ -340,6 +340,31 @@ final class Array : Value
     _RetrieveArray(uint64, isNumber, 0);
     _RetrieveArray(float, isNumber, 0);
     _RetrieveArray(double, isNumber, 0);
+
+    #define _StoreArray #(_type, _JSONType)                                    \
+    JSON@ opShl(const array<_type>& store)                                     \
+    {                                                                          \
+        for (uint i = 0, j = store.length(); i < j; i++)                       \
+        {                                                                      \
+            this.push(_JSONType(store[i]));                                    \
+        }                                                                      \
+        return this;                                                           \
+    }                                                                          \
+
+    _StoreArray(bool, Boolean);
+    _StoreArray(string, String);
+    _StoreArray(string@, String);
+    _StoreArray(int8, Number);
+    _StoreArray(int16, Number);
+    _StoreArray(int32, Number);
+    _StoreArray(int64, Number);
+    _StoreArray(uint8, Number);
+    _StoreArray(uint16, Number);
+    _StoreArray(uint32, Number);
+    _StoreArray(uint64, Number);
+    _StoreArray(float, Number);
+    _StoreArray(double, Number);
+
 
     uint length()
     {
