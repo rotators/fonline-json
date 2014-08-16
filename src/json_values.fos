@@ -102,7 +102,7 @@ class Value : JSON
         file f;
         if (f.open(path, "w") == 0)
         {
-            string@ text = this.stringify("  ");
+            string@ text = Stringify(this, "  ", "");
             return (uint(f.writeString(text)) == _CharLength(text));
         }
         return false;
