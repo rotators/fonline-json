@@ -68,24 +68,29 @@ class Value : JSON
     void forEach(JSONForEachIndex@ callback)    { return; }
     void forEach(JSONForEachIndexAll@ callback) { return; }
 
-    string@ stringify() { return Stringify(this, "", ""); }
+    string@ stringify()
+    {
+        return Stringify(this, "", "");
+    }
+
+    string@ stringify(uint space)
+    {
+        if (space > 10) space = 10;
+        return Stringify(this, indent[space], "");
+    }
+
     string@ stringify(const string& space)
     {
-        uint length = _CharLength(space);
-        if (length > 8)
+        string str = substring(space, 0, 10);
+        for (uint i = 0, j = str.length(); i < j; i++)
         {
-            Log("Maximum space length exceeded.");
-            return "";
-        }
-        for (uint i = 0; i < length; i++)
-        {
-            if (!_IsWhitespace(_CharGet(space, i)))
+            if (!_IsWhitespace(_CharGet(str, i)))
             {
-                Log("space can contain only whitespace characters.");
+                Log("Indents can contain only whitespace characters.");
                 return "";
             }
         }
-        return Stringify(this, space, "");
+        return Stringify(this, str, "");
     }
 
     bool save(const string& path)

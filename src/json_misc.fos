@@ -50,6 +50,25 @@ array<string> controlChars = {
 };
 
 /**
+ * Indent table.
+ *
+ * Used by JSON::stringify(uint space).
+ */
+array<string> indent = {
+    "",
+    " ",
+    "  ",
+    "   ",
+    "    ",
+    "     ",
+    "      ",
+    "       ",
+    "        ",
+    "         ",
+    "          "
+};
+
+/**
  *  JSON String escaping.
  */
 string@ EscapeString(string& str)
@@ -230,4 +249,3 @@ string@ Stringify(JSON@ value, const string& space, string& indent)
     }
     return s;
 }
-

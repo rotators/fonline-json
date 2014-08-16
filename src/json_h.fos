@@ -95,6 +95,7 @@ shared interface JSON
     //  Use space argument to control style of the indentation.
     //
     string@ stringify();
+    string@ stringify(uint space);
     string@ stringify(const string& space);
 
     //  File saving
