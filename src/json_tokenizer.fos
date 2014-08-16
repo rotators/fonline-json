@@ -68,9 +68,9 @@ class Token
 //  Returns true if reached end of text
 bool growToken(string@ tokenValue, uint& tokenLength, uint& offset, uint length, uint8 character)
 {
-    tokenLength += 1;
+    tokenLength++;
     _CharAdd(tokenValue, character);
-    offset += 1;
+    offset++;
     return offset >= length;
 }
 
@@ -92,7 +92,7 @@ bool eatNumberToken(const string& text, uint& offset, uint length, array<Token@>
         if (growToken(tokenValue, tokenLength, offset, length, '0'))
         {
             tokens.insertLast(@Token(NUMBER, tokenValue));
-            offset += 1;
+            offset++;
             return true;
         }
     }
@@ -101,7 +101,7 @@ bool eatNumberToken(const string& text, uint& offset, uint length, array<Token@>
         if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
         {
             tokens.insertLast(@Token(NUMBER, tokenValue));
-            offset += 1;
+            offset++;
             return true;
         }
         while (offset < length)
@@ -111,7 +111,7 @@ bool eatNumberToken(const string& text, uint& offset, uint length, array<Token@>
                 if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
                 {
                     tokens.insertLast(@Token(NUMBER, tokenValue));
-                    offset += 1;
+                    offset++;
                     return true;
                 }
             }
@@ -134,7 +134,7 @@ bool eatNumberToken(const string& text, uint& offset, uint length, array<Token@>
                 if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
                 {
                     tokens.insertLast(@Token(NUMBER, tokenValue));
-                    offset += 1;
+                    offset++;
                     return true;
                 }
             }
@@ -161,7 +161,7 @@ bool eatNumberToken(const string& text, uint& offset, uint length, array<Token@>
         if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
         {
             tokens.insertLast(@Token(NUMBER, tokenValue));
-            offset += 1;
+            offset++;
             return true;
         }
     }
@@ -172,7 +172,7 @@ bool eatNumberToken(const string& text, uint& offset, uint length, array<Token@>
             if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
             {
                 tokens.insertLast(@Token(NUMBER, tokenValue));
-                offset += 1;
+                offset++;
                 return true;
             }
         }
@@ -190,19 +190,19 @@ bool eatStringToken(const string& text, uint& offset, uint length, array<Token@>
 {
     string tokenValue = "";
     uint tokenLength = 0;
-    offset += 1;
+    offset++;
 
     while (offset < length)
     {
         if (_CharGet(text, offset) == '"') // end of string
         {
             tokens.insertLast(@Token(STRING, tokenValue));
-            offset += 1;
+            offset++;
             return true;
         }
         else if (_CharGet(text, offset) == 92) // escape sequence
         {
-            offset += 1;
+            offset++;
             if (offset >= length)
             {
                 return false;
@@ -254,7 +254,7 @@ bool eatLiteralToken(const string& text, uint& offset, string@ match, array<Toke
     {
         return false;
     }
-    for (uint i = 1; i < tokenLength; i += 1)
+    for (uint i = 1; i < tokenLength; i++)
     {
         if (_CharGet(text, offset + i) != _CharGet(match, i))
         {
@@ -270,13 +270,13 @@ bool eatLiteralToken(const string& text, uint& offset, string@ match, array<Toke
 void eatStructuralToken(const string& text, uint& offset, array<Token@>@ tokens)
 {
     tokens.insertLast(@Token(TokenType(_CharGet(text, offset)), ""));
-    offset += 1;
+    offset++;
 }
 
 
 void eatWhitespace(const string& text, uint& offset, uint length)
 {
-    offset += 1;
+    offset++;
     while (offset < length)
     {
         switch (_CharGet(text, offset))
@@ -285,7 +285,7 @@ void eatWhitespace(const string& text, uint& offset, uint length)
             case 10:
             case 13:
             case 32:
-                offset += 1;
+                offset++;
                 break;
             default:
                 return;

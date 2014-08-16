@@ -30,24 +30,24 @@ JSON@ parseValue(array<Token@>@ tokens, uint& tokenIndex)
     switch (tokens[tokenIndex].type)
     {
         case NULL:
-            tokenIndex += 1;
+            tokenIndex++;
             return @Null();
         case TRUE:
-            tokenIndex += 1;
+            tokenIndex++;
             return @Boolean(true);
         case FALSE:
-            tokenIndex += 1;
+            tokenIndex++;
             return @Boolean(false);
         case NUMBER:
         {
             JSON@ value = Number(StrToDouble(tokens[tokenIndex].value));
-            tokenIndex += 1;
+            tokenIndex++;
             return @value;
         }
         case STRING:
         {
             JSON@ value = String(tokens[tokenIndex].value);
-            tokenIndex += 1;
+            tokenIndex++;
             return @value;
         }
         case LEFT_CURLY_BRACKET:
@@ -55,7 +55,7 @@ JSON@ parseValue(array<Token@>@ tokens, uint& tokenIndex)
             JSON@ obj = Object();
             while (tokenIndex < tokens.length())
             {
-                tokenIndex += 1;
+                tokenIndex++;
                 if (tokenIndex >= tokens.length())
                 {
                     Log("JSON parser: expected object key or end of object.");
@@ -67,7 +67,7 @@ JSON@ parseValue(array<Token@>@ tokens, uint& tokenIndex)
                 }
                 string key = tokens[tokenIndex].value;
 
-                tokenIndex += 1;
+                tokenIndex++;
                 if (tokenIndex >= tokens.length())
                 {
                     Log("JSON parser: expected ':', found end of tokens.");
@@ -79,7 +79,7 @@ JSON@ parseValue(array<Token@>@ tokens, uint& tokenIndex)
                     return @undefined;
                 }
 
-                tokenIndex += 1;
+                tokenIndex++;
                 if (tokenIndex >= tokens.length())
                 {
                     Log("JSON parser: expected a value, found end of tokens.");
@@ -96,7 +96,7 @@ JSON@ parseValue(array<Token@>@ tokens, uint& tokenIndex)
 
                 if (tokens[tokenIndex].type == RIGHT_CURLY_BRACKET)
                 {
-                    tokenIndex += 1;
+                    tokenIndex++;
                     return @obj;
                 }
                 if (tokens[tokenIndex].type != COMMA)
@@ -111,11 +111,11 @@ JSON@ parseValue(array<Token@>@ tokens, uint& tokenIndex)
             JSON@ arr = Array();
             while (tokenIndex < tokens.length())
             {
-                tokenIndex += 1;
+                tokenIndex++;
                 if (tokenIndex >= tokens.length()) return @undefined;
                 if (tokens[tokenIndex].type == RIGHT_SQUARE_BRACKET)
                 {
-                    tokenIndex += 1;
+                    tokenIndex++;
                     return @arr;
                 }
                 JSON@ val = parseValue(tokens, tokenIndex);
@@ -127,7 +127,7 @@ JSON@ parseValue(array<Token@>@ tokens, uint& tokenIndex)
                 }
                 if (tokens[tokenIndex].type == RIGHT_SQUARE_BRACKET)
                 {
-                    tokenIndex += 1;
+                    tokenIndex++;
                     return @arr;
                 }
                 if (tokens[tokenIndex].type != COMMA)

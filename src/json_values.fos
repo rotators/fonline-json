@@ -271,7 +271,7 @@ final class Object : Value
     void forEach(JSONForEachKey@ callback)
     {
         JSON@ value;
-        for (uint i = 0, j = this.keys.length(); i < j; i += 1)
+        for (uint i = 0, j = this.keys.length(); i < j; i++)
         {
             properties.get(this.keys[i], @value);
             callback(value, this.keys[i]);
@@ -280,7 +280,7 @@ final class Object : Value
     void forEach(JSONForEachKeyAll@ callback)
     {
         JSON@ value;
-        for (uint i = 0, j = this.keys.length(); i < j; i += 1)
+        for (uint i = 0, j = this.keys.length(); i < j; i++)
         {
             properties.get(this.keys[i], @value);
             callback(value, this.keys[i], this);
@@ -382,14 +382,14 @@ final class Array : Value
 
     void forEach(JSONForEachIndex@ callback)
     {
-        for (uint i = 0, j = elements.length(); i < j; i += 1)
+        for (uint i = 0, j = elements.length(); i < j; i++)
         {
             callback(elements[i], i);
         }
     }
     void forEach(JSONForEachIndexAll@ callback)
     {
-        for (uint i = 0, j = elements.length(); i < j; i += 1)
+        for (uint i = 0, j = elements.length(); i < j; i++)
         {
             callback(elements[i], i, this);
         }

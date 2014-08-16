@@ -6,4 +6,5 @@
 void tmain()
 {
     JSON@ tabs = JSONLoad("tabs.json");
+    Log(tabs[0].stringify(1));
 }

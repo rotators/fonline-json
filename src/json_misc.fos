@@ -144,7 +144,7 @@ double StrToDouble(string@ str)
             case 57:  // 9
             {
                 value += (symbol - 48) * int(pow(10, count));
-                count += 1;
+                count++;
                 break;
             }
             case 69:  // E
@@ -237,7 +237,7 @@ string@ Stringify(JSON@ value, const string& space, string& indent)
     else if (value.isArray())
     {
         s = (compact ? "[" : "[\n");
-        for (uint i = 0, j = value.length(); i < j; i += 1)
+        for (uint i = 0, j = value.length(); i < j; i++)
         {
             s += newIndent + Stringify(value[i], space, newIndent);
             if (i < j - 1)

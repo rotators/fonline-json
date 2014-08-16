@@ -126,7 +126,7 @@ shared interface JSON
     {
         if (@value != null && value.isArray())
         {
-            for (uint i = 0, j = value.length(); i < j; i += 1)
+            for (uint i = 0, j = value.length(); i < j; i++)
             {
                 callback(value[i], i);
             }
@@ -136,7 +136,7 @@ shared interface JSON
     {
         if (@value != null && value.isArray())
         {
-            for (uint i = 0, j = value.length(); i < j; i += 1)
+            for (uint i = 0, j = value.length(); i < j; i++)
             {
                 callback(value[i], i, value);
             }
@@ -147,7 +147,7 @@ shared interface JSON
         if (@value != null && value.isObject())
         {
             array<string> keys = value.getKeys();
-            for (uint i = 0, j = keys.length(); i < j; i += 1)
+            for (uint i = 0, j = keys.length(); i < j; i++)
             {
                 callback(value[keys[i]], keys[i]);
             }
@@ -158,7 +158,7 @@ shared interface JSON
         if (@value != null && value.isObject())
         {
             array<string> keys = value.getKeys();
-            for (uint i = 0, j = keys.length(); i < j; i += 1)
+            for (uint i = 0, j = keys.length(); i < j; i++)
             {
                 callback(value[keys[i]], keys[i], value);
             }
