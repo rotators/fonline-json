@@ -12,8 +12,11 @@
 #ifdef _JSON_REV_PRE400
     #define _CharGet    #(s, i)    s[i]
     #define _CharSet    #(s, i, v) s[i] = v
-    #define _CharAdd    #(s, v)    s.resize(s.length() + 1); \
-                                   s[s.length() - 1] = v
+    #define _CharAdd    #(s, v)    {                             \
+                                       uint len = s.length();    \
+                                       s.resize(len + 1);        \
+                                       s[len] = v;               \
+                                   }
     #define _CharLength #(s)       s.length()
     #define _CharResize #(s, v)    s.resize(v)
 #endif
@@ -21,8 +24,11 @@
 #ifndef _JSON_REV_PRE400
     #define _CharGet    #(s, i)    s.rawGet(i)
     #define _CharSet    #(s, i, v) s.rawSet(i, v)
-    #define _CharAdd    #(s, v)    s.rawResize(s.rawLength() + 1); \
-                                   s.rawSet(s.rawLength() - 1, v)
+    #define _CharAdd    #(s, v)    {                             \
+                                       uint len = s.rawLength(); \
+                                       s.rawResize(len + 1);     \
+                                       s.rawSet(len, v);         \
+                                   }
     #define _CharLength #(s)       s.rawLength()
     #define _CharResize #(s, v)    s.rawResize(v)
 #endif
