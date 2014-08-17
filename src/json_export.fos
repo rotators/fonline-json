@@ -47,8 +47,10 @@ JSON@ JSONLoad(const string& path)
         string text = "";
         if (f.readString(size, text) == size)
         {
+            f.close();
             return JSONParse(text);
         }
+        f.close();
     }
     return @undefined;
 }
