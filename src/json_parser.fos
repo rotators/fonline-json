@@ -40,7 +40,17 @@ JSON@ parseValue(array<Token@>@ tokens, uint& tokenIndex)
             return @Boolean(false);
         case NUMBER:
         {
-            JSON@ value = Number(StrToDouble(tokens[tokenIndex].value));
+            float f = 0;
+            _ToFloat(tokens[tokenIndex].value, f);
+            JSON@ value = Number(f);
+            tokenIndex++;
+            return @value;
+        }
+        case INTEGER:
+        {
+            int i = 0;
+            _ToInteger(tokens[tokenIndex].value, i);
+            JSON@ value = Number(i);
             tokenIndex++;
             return @value;
         }

@@ -6,8 +6,6 @@
 
 /**
  *  Compatibility macros.
- *
- *  Macros for manipulating raw characters in a string.
  */
 #ifdef _JSON_REV_PRE400
     #define _CharGet    #(s, i)    s[i]
@@ -19,6 +17,8 @@
                                    }
     #define _CharLength #(s)       s.length()
     #define _CharResize #(s, v)    s.resize(v)
+    #define _ToFloat    #(s, v)    StrToFloat(s, v)
+    #define _ToInteger  #(s, v)    StrToInt(s, v)
 #endif
 
 #ifndef _JSON_REV_PRE400
@@ -31,12 +31,16 @@
                                    }
     #define _CharLength #(s)       s.rawLength()
     #define _CharResize #(s, v)    s.rawResize(v)
+    #define _ToFloat    #(s, v)    v = s.toFloat();
+    #define _ToInteger  #(s, v)    v = s.toInt();
 #endif
 
 /**
  *  Other macros.
  */
 #define _IsWhitespace   #(c)       (c == 9 || c == 10 || c == 13 || c == 32)
+
+
 
 /**
  *  controlChars table.
@@ -101,76 +105,6 @@ string@ EscapeString(string& str)
     }
     return escapedString;
 }
-
-////////////////////////////////////////////////////////////////////////////////
-//
-//  StrToDouble
-//  Converts a string to a double. Used when evaluating a NUMBER token.
-//  TODO: Check the precision of numbers larger than float, change return value
-//  to bool, return the number by reference and false if conversion failed.
-//
-double StrToDouble(string@ str)
-{
-    int length = _CharLength(str);
-    int position = _CharLength(str) - 1;
-    int count = 0;
-    int symbol = 0;
-    int value = 0;
-    int exponent = 0;
-
-    while (position >= 0)
-    {
-        symbol = _CharGet(str, position);
-
-        switch (symbol)
-        {
-            case 43:  // + sign
-            {
-                break;
-            }
-            case 45:  // - sign
-            {
-                value = -value;
-                break;
-            }
-            case 46:  // . decimal point
-            {
-                exponent += -count;
-                break;
-            }
-            case 48:  // 0
-            case 49:  // 1
-            case 50:  // 2
-            case 51:  // 3
-            case 52:  // 4
-            case 53:  // 5
-            case 54:  // 6
-            case 55:  // 7
-            case 56:  // 8
-            case 57:  // 9
-            {
-                value += (symbol - 48) * int(pow(10, count));
-                count++;
-                break;
-            }
-            case 69:  // E
-            case 101: // e
-            {
-                exponent = value;
-                value = 0;
-                count = 0;
-                break;
-            }
-            default:
-            {
-                return 0;
-            }
-        }
-        position -= 1;
-    }
-    return double(value) * double(pow(10, exponent));
-}
-
 
 ////////////////////////////////////////////////////////////////////////////////
 //

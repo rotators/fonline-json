@@ -17,7 +17,8 @@ enum TokenType
     FALSE                = 'f',
     NULL                 = 'n',
     STRING               = '"',
-    NUMBER               = '#'
+    NUMBER               = '#',
+    INTEGER              = 'I'
 }
 
 class Token
@@ -58,6 +59,7 @@ class Token
             case STRING:
                 return "string";
             case NUMBER:
+            case INTEGER:
                 return "number";
         }
         return "unknown";
@@ -79,6 +81,7 @@ bool eatNumberToken(const string& text, uint& offset, uint length, array<Token@>
 {
     string tokenValue = "";
     uint tokenLength = 0;
+    TokenType tokenType = INTEGER;
 
     if (_CharGet(text, offset) == '-')
     {
@@ -91,7 +94,7 @@ bool eatNumberToken(const string& text, uint& offset, uint length, array<Token@>
     {
         if (growToken(tokenValue, tokenLength, offset, length, '0'))
         {
-            tokens.insertLast(@Token(NUMBER, tokenValue));
+            tokens.insertLast(@Token(tokenType, tokenValue));
             offset++;
             return true;
         }
@@ -100,7 +103,7 @@ bool eatNumberToken(const string& text, uint& offset, uint length, array<Token@>
     {
         if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
         {
-            tokens.insertLast(@Token(NUMBER, tokenValue));
+            tokens.insertLast(@Token(tokenType, tokenValue));
             offset++;
             return true;
         }
@@ -110,7 +113,7 @@ bool eatNumberToken(const string& text, uint& offset, uint length, array<Token@>
             {
                 if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
                 {
-                    tokens.insertLast(@Token(NUMBER, tokenValue));
+                    tokens.insertLast(@Token(tokenType, tokenValue));
                     offset++;
                     return true;
                 }
@@ -123,6 +126,7 @@ bool eatNumberToken(const string& text, uint& offset, uint length, array<Token@>
     }
     if (_CharGet(text, offset) == '.')
     {
+        tokenType = NUMBER;
         if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
         {
             return false;
@@ -133,7 +137,7 @@ bool eatNumberToken(const string& text, uint& offset, uint length, array<Token@>
             {
                 if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
                 {
-                    tokens.insertLast(@Token(NUMBER, tokenValue));
+                    tokens.insertLast(@Token(tokenType, tokenValue));
                     offset++;
                     return true;
                 }
@@ -145,6 +149,7 @@ bool eatNumberToken(const string& text, uint& offset, uint length, array<Token@>
         }
     }
     if (_CharGet(text, offset) == 'e' || _CharGet(text, offset) == 'E') {
+        tokenType = NUMBER;
         if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
         {
             return false;
@@ -160,7 +165,7 @@ bool eatNumberToken(const string& text, uint& offset, uint length, array<Token@>
     {
         if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
         {
-            tokens.insertLast(@Token(NUMBER, tokenValue));
+            tokens.insertLast(@Token(tokenType, tokenValue));
             offset++;
             return true;
         }
@@ -171,7 +176,7 @@ bool eatNumberToken(const string& text, uint& offset, uint length, array<Token@>
         {
             if (growToken(tokenValue, tokenLength, offset, length, _CharGet(text, offset)))
             {
-                tokens.insertLast(@Token(NUMBER, tokenValue));
+                tokens.insertLast(@Token(tokenType, tokenValue));
                 offset++;
                 return true;
             }
@@ -181,7 +186,7 @@ bool eatNumberToken(const string& text, uint& offset, uint length, array<Token@>
             break;
         }
     }
-    tokens.insertLast(@Token(NUMBER, tokenValue));
+    tokens.insertLast(@Token(tokenType, tokenValue));
     return true;
 }
 
