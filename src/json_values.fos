@@ -222,6 +222,11 @@ final class String : Value
         return true;
     }
 
+    uint length()
+    {
+        return value.length();
+    }
+
     JSON@ opShr(string& value)
     {
         value = this.value;
