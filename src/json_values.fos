@@ -412,3 +412,19 @@ final class Array : Value
         }
     }
 }
+
+JSON@ JSONNull()               { return @Null(); }
+JSON@ JSONBoolean(bool value)  { return @Boolean(value); }
+JSON@ JSONNumber(int8 value)   { return @Number(value); }
+JSON@ JSONNumber(int16 value)  { return @Number(value); }
+JSON@ JSONNumber(int32 value)  { return @Number(value); }
+JSON@ JSONNumber(int64 value)  { return @Number(value); }
+JSON@ JSONNumber(uint8 value)  { return @Number(value); }
+JSON@ JSONNumber(uint16 value) { return @Number(value); }
+JSON@ JSONNumber(uint32 value) { return @Number(value); }
+JSON@ JSONNumber(uint64 value) { return @Number(value); }
+JSON@ JSONNumber(float value)  { return @Number(value); }
+JSON@ JSONNumber(double value) { return @Number(value); }
+JSON@ JSONString(string value) { return @String(value); }
+JSON@ JSONObject()             { return @Object(); }
+JSON@ JSONArray()              { return @Array(); }
