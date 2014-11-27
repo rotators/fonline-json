@@ -183,24 +183,30 @@ funcdef void JSONForEachIndexAll(JSON@ value, uint index, JSON@ all);
 //  Imports
 //
 #ifndef __JSON__
-    import JSON@ JSONParse(const string& text) from "json";
-    import JSON@ JSONLoad(const string& path) from "json";
 
-    import JSON@ JSONNull() from "json";
-    import JSON@ JSONBoolean(bool value) from "json";
-    import JSON@ JSONNumber(int8 value) from "json";
-    import JSON@ JSONNumber(int16 value) from "json";
-    import JSON@ JSONNumber(int32 value) from "json";
-    import JSON@ JSONNumber(int64 value) from "json";
-    import JSON@ JSONNumber(uint8 value) from "json";
-    import JSON@ JSONNumber(uint16 value) from "json";
-    import JSON@ JSONNumber(uint32 value) from "json";
-    import JSON@ JSONNumber(uint64 value) from "json";
-    import JSON@ JSONNumber(float value) from "json";
-    import JSON@ JSONNumber(double value) from "json";
-    import JSON@ JSONString(string value) from "json";
-    import JSON@ JSONObject() from "json";
-    import JSON@ JSONArray() from "json";
+    // Easy renaming of module name without altering source
+    #ifndef JSON_MODULE
+        #define JSON_MODULE "json"
+    #endif
+
+    import JSON@ JSONParse(const string& text) from JSON_MODULE;
+    import JSON@ JSONLoad(const string& path) from JSON_MODULE;
+
+    import JSON@ JSONNull() from JSON_MODULE;
+    import JSON@ JSONBoolean(bool value) from JSON_MODULE;
+    import JSON@ JSONNumber(int8 value) from JSON_MODULE;
+    import JSON@ JSONNumber(int16 value) from JSON_MODULE;
+    import JSON@ JSONNumber(int32 value) from JSON_MODULE;
+    import JSON@ JSONNumber(int64 value) from JSON_MODULE;
+    import JSON@ JSONNumber(uint8 value) from JSON_MODULE;
+    import JSON@ JSONNumber(uint16 value) from JSON_MODULE;
+    import JSON@ JSONNumber(uint32 value) from JSON_MODULE;
+    import JSON@ JSONNumber(uint64 value) from JSON_MODULE;
+    import JSON@ JSONNumber(float value) from JSON_MODULE;
+    import JSON@ JSONNumber(double value) from JSON_MODULE;
+    import JSON@ JSONString(string value) from JSON_MODULE;
+    import JSON@ JSONObject() from JSON_MODULE;
+    import JSON@ JSONArray() from JSON_MODULE;
 #endif
 
 #endif // __JSON_H__
