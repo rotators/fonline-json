@@ -63,17 +63,16 @@ JSON@ JSONLoad(const string& path)
         int size = f.getSize();
         #ifdef _JSON_READSTRING_OLD
         string text = "";
-        if (f.readString(size, text) == size)
+        if (f.readString(size, text) == size && f.close() <= 0)
         #endif
         #ifdef _JSON_READSTRING_475
         // Skip sanity check due to differences in string::length() and file::getSize()
         string text = f.readString(size);
+        f.close();
         #endif
         {
-            f.close();
             return JSONParse(text);
         }
-        f.close();
     }
     return @undefined;
 }
