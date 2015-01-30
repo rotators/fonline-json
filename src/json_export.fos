@@ -5,6 +5,23 @@
  ******************************************************************************/
 
 /**
+  * Support for older SDK versions.
+  */
+
+#ifndef __VERSION
+ #define _JSON_READSTRING_OLD
+#endif
+
+#ifdef __VERSION
+ #if __VERSION < 475
+  #define _JSON_READSTRING_OLD
+ #endif
+ #if __VERSION >= 475
+  #define _JSON_READSTRING_475
+ #endif
+#endif
+
+/**
  *  Parses a JSON text.
  *
  *  Takes a JSON text and produces a structure of JSON values.
@@ -44,8 +61,14 @@ JSON@ JSONLoad(const string& path)
     if (f.open(path, "r") == 0)
     {
         int size = f.getSize();
+        #ifdef _JSON_READSTRING_OLD
         string text = "";
         if (f.readString(size, text) == size)
+        #endif
+        #ifdef _JSON_READSTRING_475
+        // Skip sanity check due to differences in string::length() and file::getSize()
+        string text = f.readString(size);
+        #endif
         {
             f.close();
             return JSONParse(text);
